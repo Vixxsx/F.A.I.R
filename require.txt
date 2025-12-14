@@ -1,6 +1,50 @@
+# Core Web Framework
+fastapi
+uvicorn
+python-multipart
+
+# AI/ML Models
 openai-whisper
 torch
 torchaudio
+
+# NLP & Text Processing
+transformers
+sentence-transformers
+textblob
+language-tool-python
+
+# Audio Processing
+librosa
+soundfile
+pydub
+ffmpeg-python
+
+# Computer Vision (for future video analysis)
+opencv-python
+mediapipe
+
+# Data Processing
+numpy
+pandas
+scipy
+
+# API & Utilities
+requests
+python-dotenv
+pydantic
+
+# Visualization
+plotly
+matplotlib
+
+# Frontend
 streamlit
-fastapi
-uvicorn
+streamlit-webrtc
+
+# Testing
+pytest
+pytest-asyncio
+
+# Deployment
+gunicorn
