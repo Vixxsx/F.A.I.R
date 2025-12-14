@@ -1,0 +1,52 @@
+{
+  "text": "Receiving the Meritus Scholarship for Academic Excellence is truly an honor for me. My journey through the first year has been transformational. Academic rigor, the structured curriculum and case-based discussions really push me to think deeper and sharpen my analytical abilities. A big part of this achievement goes to our exceptional faculty. This, their guidance, real guidance and constant encouragement help me connect the theory with practice in every course.",
+  "language": "en",
+  "segments": [
+    {
+      "id": 0,
+      "start": 0.0,
+      "end": 8.0,
+      "text": "Receiving the Meritus Scholarship for Academic Excellence is truly an honor for me.",
+      "duration": 8.0
+    },
+    {
+      "id": 1,
+      "start": 8.0,
+      "end": 15.0,
+      "text": "My journey through the first year has been transformational.",
+      "duration": 7.0
+    },
+    {
+      "id": 2,
+      "start": 15.0,
+      "end": 25.0,
+      "text": "Academic rigor, the structured curriculum and case-based discussions really push me to think deeper",
+      "duration": 10.0
+    },
+    {
+      "id": 3,
+      "start": 25.0,
+      "end": 29.0,
+      "text": "and sharpen my analytical abilities.",
+      "duration": 4.0
+    },
+    {
+      "id": 4,
+      "start": 29.0,
+      "end": 38.0,
+      "text": "A big part of this achievement goes to our exceptional faculty.",
+      "duration": 9.0
+    },
+    {
+      "id": 5,
+      "start": 38.0,
+      "end": 53.0,
+      "text": "This, their guidance, real guidance and constant encouragement help me connect the theory with practice in every course.",
+      "duration": 15.0
+    }
+  ],
+  "duration": 53.0,
+  "word_count": 70,
+  "timestamp": "2025-12-10T23:26:12.033887",
+  "model_used": "base"
+}
