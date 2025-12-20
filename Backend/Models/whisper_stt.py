@@ -194,5 +194,23 @@ def test_whisper():
     print("TRANSCRIPTION COMPLETE!")
     print("="*70)
 
+def save_transcript(self, transcript_data, output_path):
+    """
+    Save transcript to JSON file
+    
+    Args:
+        transcript_data: Output from transcribe_audio()
+        output_path: Path to save JSON file
+    """
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    
+    import json
+    with open(output_path, 'w', encoding='utf-8') as f:
+        json.dump(transcript_data, f, indent=2, ensure_ascii=False)
+    
+    print(f"💾 Transcript saved to: {output_path}")
+    return output_path
+
 if __name__ == "__main__":
     test_whisper()
+
