@@ -1,4 +1,4 @@
-# 🎯 AIRA - Automated Interview Feedback Analyzer
+# 🎯 AIRA - Automated Interview & Response Analyzer
 
 **AI-powered interview practice platform that provides real-time feedback on your performance**
 
@@ -6,7 +6,7 @@
 
 ## 📖 About
 
-**AIRA (Automated Interview Feedback Analyzer)** is an AI-powered interview coaching platform that helps job seekers practice and improve their interview skills. Using advanced machine learning models, AIRA analyzes your video responses and provides detailed feedback on multiple aspects of your performance.
+**AIRA (Automated Interview & Response Analyzer)** is an AI-powered interview coaching platform that helps job seekers practice and improve their interview skills. Using advanced machine learning models, AIRA analyzes your video responses and provides detailed feedback on multiple aspects of your performance.
 
 ### Why AIRA?
 
@@ -82,7 +82,7 @@ pip install -r requirements.txt
 OPENAI_API_KEY=your-api-key-here
 
 # Run the application
-python main.py
+uvicorn Backend.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 Open your browser and navigate to `http://localhost:8000`

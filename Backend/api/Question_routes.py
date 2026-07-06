@@ -2,13 +2,12 @@
 Question Generation Routes
 Uses the Question_Generator model to generate interview questions
 """
-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 
 # Import your existing Question Generator
-from Backend.Models.Question_Generator import QuestionGenerator
+from Models.Question_Generator import QuestionGenerator
 
 router = APIRouter(prefix="/api/questions", tags=["questions"])
 
@@ -17,40 +16,33 @@ question_generator = QuestionGenerator()
 
 class QuestionRequest(BaseModel):
     jobRole: str
+    degree : str
+    education_lvl: str
     difficulty: str
+    company_type: str
     count: int
-    type: str  # behavioral, technical, or mixed
+    interview_type: str
 
 @router.post("/generate")
 async def generate_questions(request: QuestionRequest):
-    """
-    Generate interview questions based on job role and preferences
-    
-    Args:
-        jobRole: The job position (e.g., "Software Engineer")
-        difficulty: beginner, intermediate, or advanced
-        count: Number of questions to generate (1-10)
-        type: behavioral, technical, or mixed
-    
-    Returns:
-        List of interview questions
-    """
-    
     try:
         print(f"\n{'='*60}")
         print(f"📝 Generating Questions")
         print(f"   Job Role: {request.jobRole}")
+        print(f"   Degree: {request.degree}")
+        print(f"   Company Type: {request.company_type}")
         print(f"   Difficulty: {request.difficulty}")
+        print(f"   Type: {request.interview_type}")
         print(f"   Count: {request.count}")
-        print(f"   Type: {request.type}")
         print(f"{'='*60}\n")
         
         # Generate questions using your model
         profile={
             "job_role": request.jobRole,
+            "degree": request.degree,
             "difficulty": request.difficulty,
-            "degree": 'Computer Science',
-            "company_type": 'Tech Company',
+            "company_type": request.company_type,
+            "interview_type": request.interview_type
         }
         result=question_generator.generate_questions(
             profile=profile,
@@ -64,11 +56,14 @@ async def generate_questions(request: QuestionRequest):
         return {
             "success": True,
             "questions": questions,
+            "profile": profile,
             "metadata": {
                 "job_role": request.jobRole,
+                "degree": request.degree,
+                "company_type": request.company_type,
                 "difficulty": request.difficulty,
-                "count": len(questions),
-                "type": request.type
+                "interview_type": request.interview_type,
+                "count": len(questions)
             }
         }
     
@@ -109,9 +104,11 @@ async def generate_questions(request: QuestionRequest):
             "fallback": True,
             "metadata": {
                 "job_role": request.jobRole,
+                "degree": request.degree,
+                "company_type": request.company_type,
                 "difficulty": request.difficulty,
                 "count": len(fallback),
-                "type": request.type
+                "interview_type": request.interview_type
             }
         }
 

@@ -17,9 +17,9 @@ except ImportError:
 class EyeTracker:
     def __init__(self):
         self.model_path = "Backend/Models/face_landmarker.task"
-
         if not os.path.exists(self.model_path):
-            self._download_model()
+            raise FileNotFoundError(f"Model file not found: {self.model_path}\n"
+                                    "File Required and should be in Repo")
 
         import mediapipe as mp
         from mediapipe.tasks import python
@@ -48,16 +48,6 @@ class EyeTracker:
         self.RIGHT_MOUTH       = 291
 
         print("✅ Eye Tracker initialized (MediaPipe 0.10.32) - Enhanced Accuracy")
-
-    def _download_model(self):
-        print("📥 Downloading face landmarker model (~30MB)...")
-        os.makedirs(os.path.dirname(self.model_path), exist_ok=True)
-        url = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
-        try:
-            urllib.request.urlretrieve(url, self.model_path)
-            print("✅ Model downloaded!")
-        except Exception as e:
-            raise Exception(f"Failed to download model: {e}\nDownload manually from:\n{url}\nSave to: {self.model_path}")
 
     def analyze_frame(self, frame: np.ndarray) -> Dict:
         try:

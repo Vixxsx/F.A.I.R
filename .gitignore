@@ -33,7 +33,7 @@ test_*
 tests/
 
 # ML model files
-*.task
+!Backend/Models/face_landmarker.task
 *.tflite
 *.h5
 *.pkl

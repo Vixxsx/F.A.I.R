@@ -8,14 +8,6 @@ except ImportError:
     cv2 = None
 from datetime import datetime
 # Import models
-from Backend.Models.whisper_stt import WhisperSTT
-from Backend.Models.filler_word_detection import FillerDetector
-from Backend.Models.emotion_detector import EmotionDetector
-from Backend.Models.Content_Relevancy import ContentRelevancyAnalyzer
-from Backend.Models.eye_tracker import EyeTracker
-from Backend.Utilities.video_utils import VideoProcessor
-from Backend.Utilities.audio_extract import AudioExtractor
-
 import numpy as np
 
 def convert_numpy_types(obj):
@@ -35,13 +27,7 @@ def convert_numpy_types(obj):
 router = APIRouter(prefix="/api/interview", tags=["interview"])
 
 # Initialize models
-stt               = WhisperSTT(model_size="small")   # upgraded from base
-filler_detector   = FillerDetector(strictness="medium")
-emotion_detector  = EmotionDetector()
-relevancy_analyzer = ContentRelevancyAnalyzer()   
-eye_tracker       = EyeTracker()   
-video_processor   = VideoProcessor()
-audio_extractor   = AudioExtractor()
+from Models._registry import (stt, filler_detector, emotion_detector, relevancy_analyzer, eye_tracker, video_processor, audio_extractor)
 
 UPLOAD_DIR = "Data/Video/Raw"
 FRAMES_DIR = "Data/Video/Frames"
@@ -101,18 +87,23 @@ async def analyze_answer(
         print(f"✅ Fillers: {filler_result['total_fillers']} ({filler_result['filler_density_percentage']}%) — Score: {filler_result['score']}/100")
 
         # ── Step 5: Extract frames ──
-        print("\n📸 Step 4: Extracting video frames...")
+        print("\n📸 Step 4: Extracting frames from video...")
         frames_output_dir = os.path.join(FRAMES_DIR, f"question_{questionNumber}_{timestamp}")
         os.makedirs(frames_output_dir, exist_ok=True)
+        
+        video_info    = video_processor.get_video_info(video_path)
+        duration      = video_info.get("duration_seconds", 0)
+        sample_every  = max(1, int(duration))
+        max_frames    = min(60, max(30, int(duration)))
 
         frame_paths = video_processor.extract_frames(
             video_path,
             output_folder=frames_output_dir,
-            every_nth=30,
-            max_frames=30,
+            every_nth=sample_every,
+            max_frames=max_frames,
             return_arrays=True
         )
-        print(f"✅ Extracted {len(frame_paths)} frames")
+        print(f"✅ Extracted {len(frame_paths)} frames (1fps from {duration}s video) | Saved to: {frames_output_dir}")
 
         print("\n👁️ Step 5: Analyzing eye contact...")
         eye_result    = eye_tracker.analyze_frames_list(frame_paths)

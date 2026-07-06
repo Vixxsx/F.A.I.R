@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel
 import os
 import warnings
+REQUIRED_MODELS = ["Backend/Models/face_landmarker.task"]
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 warnings.filterwarnings('ignore')
@@ -21,16 +22,37 @@ from Backend.api.History_routes   import router as history_router
 # Import models
 from Backend.Models.whisper_stt           import WhisperSTT
 from Backend.Models.filler_word_detection import FillerDetector
+from Backend.Models.emotion_detector      import EmotionDetector
+from Backend.Models.Content_Relevancy     import ContentRelevancyAnalyzer
+from Backend.Models.eye_tracker           import EyeTracker
+from Backend.Utilities.video_utils        import VideoProcessor
+from Backend.Utilities.audio_extract      import AudioExtractor
+from Models                               import _registry as ModelRegistry
+
 
 UPLOAD_DIR = "Data/Video/Raw"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+# ========== APPLICATION CONSTANTS ==========
+APP_NAME = "AIRA"
+APP_VERSION = "2.0.0"
+
+def checkfile():
+    missing=[]
+    for file_path in REQUIRED_MODELS:
+        if not os.path.exists(file_path):
+            missing.append(file_path)   
+    if missing:
+        print("Required model files missing:")
+        for file_path in missing:
+            print(f"  - {file_path}")
+
 # ========== CREATE FASTAPI APP ==========
 
 app = FastAPI(
-    title="AIRA - AI Interview Analyzer",
-    description="Backend API for AI-Powered Interview Feedback Analyzer",
-    version="1.0.0"
+    title="AIRA - Automated Interview & Response Analyzer",
+    description="Backend API for AI-Powered Interview & Response Analyzer",
+    version="2.0.0"
 )
 
 # ========== CORS MIDDLEWARE ==========
@@ -44,28 +66,73 @@ app.add_middleware(
 )
 
 # ========== LOAD AI MODELS ==========
-
-stt = None
-filler_detector = None
-
 @app.on_event("startup")
+async def startup_event():
+    """Initialize on server startup"""
+    print("\n" + "="*70)
+    print(f"🚀 {APP_NAME} v{APP_VERSION} Starting...")
+    print("="*70)
+    
+    # Step 1: Check required files
+    print("\n📁 Step 1: Checking required files...")
+    try:
+        checkfile()
+        print("✅ All required files present")
+    except RuntimeError as e:
+        print(str(e))
+        raise
+    
+    # Step 2: Load models
+    print("\n📦 Step 2: Loading AI models...")
+    try:
+        ModelRegistry.load_all_models()
+        print("✅ Models loaded successfully")
+    except Exception as e:
+        print(f"❌ Model loading failed: {e}")
+        raise
+    
+    # Step 3: Ready
+    print("\n" + "="*70)
+    print(f"✅ {APP_NAME} v{APP_VERSION} is READY!")
+    print("="*70 + "\n")
 async def load_models():
-    global stt, filler_detector
+    global stt, filler_detector, emotion_detector, relevancy_analyzer, eye_tracker, video_processor, audio_extractor
     print("\nInitializing MySQL Database...")
     try:
         from Backend.Utilities.database import db
-        print("✅ MySQL Database connected and tables ready!")
+        print("MySQL Database connected and tables ready!")
     except Exception as e:
-        print(f"❌ Database initialization failed: {e}")
+        print(f"Database initialization failed: {e}")
         print("⚠️  Check your .env file for MySQL credentials")
 
-    print("🎤 Loading Whisper model...")
-    stt = WhisperSTT(model_size="small")
+    print("Loading Whisper model...")
+    ModelRegistry.stt = WhisperSTT(model_size="small")
     print("✅ Whisper loaded!")
 
-    print("🔍 Loading Filler Detector...")
-    filler_detector = FillerDetector(strictness="medium")
+    print("Loading Filler Detector...")
+    ModelRegistry.filler_detector = FillerDetector(strictness="medium")
     print("✅ Filler Detector loaded!")
+
+    print("Loading Emotion Detector...")
+    ModelRegistry.emotion_detector = EmotionDetector()
+    print("✅ Emotion Detector loaded!")
+
+    print("Loading Content Relevancy Analyzer...")
+    ModelRegistry.relevancy_analyzer = ContentRelevancyAnalyzer()
+    print("✅ Content Relevancy Analyzer loaded!")
+
+    print("Loading Eye Tracker...")
+    ModelRegistry.eye_tracker = EyeTracker()
+    print("✅ Eye Tracker loaded!")
+
+    print("Loading Video Processor...")
+    ModelRegistry.video_processor = VideoProcessor()
+    print("✅ Video Processor loaded!")
+
+    print("Loading Audio Extractor...")
+    ModelRegistry.audio_extractor = AudioExtractor()
+    print("✅ Audio Extractor loaded!")
+
 
 # ========== CREATE DIRECTORIES ==========
 

@@ -12,6 +12,7 @@ deepface
 moviepy
 numpy
 pillow
+pytest
 scipy
 librosa
 mysql-connector-python
