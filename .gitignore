@@ -17,7 +17,7 @@ Thumbs.db
 
 # Environment variables
 .env
-
+*.env
 # Data files - never commit these
 Data/
 *.json

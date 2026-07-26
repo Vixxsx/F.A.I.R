@@ -1,10 +1,8 @@
 import os
 import mysql.connector
 from typing import List, Dict, Optional
-from dotenv import load_dotenv
-
-load_dotenv()
-
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 class DatabaseHelper:
     def __init__(self):

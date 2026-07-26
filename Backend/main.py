@@ -1,10 +1,29 @@
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
+import sys
+import io
+if sys.platform == 'win32':
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace', line_buffering=True)
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace', line_buffering=True)
+    except Exception:
+        pass  # Fall back to default if reconfigure fails
+
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 import warnings
+import torch
+if torch.cuda.is_available():
+    print(f"✅ GPU available: {torch.cuda.get_device_name(0)}")
+    print(f"   VRAM: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f}GB")
+else:
+    print("⚠️  GPU not available, using CPU")
+
 REQUIRED_MODELS = ["Backend/Models/face_landmarker.task"]
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
@@ -18,6 +37,7 @@ from Backend.api.Question_routes  import router as question_router
 from Backend.api.Interview_routes import router as interview_router
 from Backend.api.Feedback_routes  import router as feedback_router
 from Backend.api.History_routes   import router as history_router
+from Backend.api.Resume_routes    import router as resume_router
 
 # Import models
 from Backend.Models.whisper_stt           import WhisperSTT
@@ -106,7 +126,7 @@ async def load_models():
         print("⚠️  Check your .env file for MySQL credentials")
 
     print("Loading Whisper model...")
-    ModelRegistry.stt = WhisperSTT(model_size="small")
+    ModelRegistry.stt = WhisperSTT(model_size="small", device="cuda", compute_type="float16")
     print("✅ Whisper loaded!")
 
     print("Loading Filler Detector...")
@@ -154,6 +174,8 @@ app.include_router(feedback_router)
 print("✅ Feedback routes loaded")
 app.include_router(history_router)
 print("✅ History routes loaded")
+app.include_router(resume_router)
+print("✅ Resume routes loaded")   
 
 # Auth routes
 try:

@@ -61,12 +61,16 @@
            PAGE 1 — SCORE RINGS
         ══════════════════════════════ */
         #page-scores {
-            min-height:100vh;
-            display:flex; flex-direction:column;
-            align-items:center; justify-content:center;
-            padding: 20px 24px 50px;
-            position:relative; z-index:10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 15px 15px 20px !important;
+            position: relative;
+            z-index: 10;
             transition: opacity .55s ease, transform .55s ease;
+            width: 100% !important;
         }
         #page-scores.exit {
             opacity:0;
@@ -85,7 +89,7 @@
         .page-h1 {
             font-family: var(--font-display, 'Orbitron', sans-serif);
             font-size: clamp(20px,4vw,30px); font-weight:700; letter-spacing:.07em;
-            text-align:center; margin-bottom:56px;
+            text-align:center; margin-bottom:20px;
             background: linear-gradient(90deg, #05FFA1, #01CDFE);
             -webkit-background-clip:text; -webkit-text-fill-color:transparent;
             background-clip:text;
@@ -94,20 +98,22 @@
 
         /* 4-ring grid */
         .rings-grid {
-            display:grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 44px 60px;
-            max-width: 680px; width:100%;
-            margin-bottom: 56px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px 40px;
+            max-width: 580px;
+            width: 100%;
+            margin: 0 auto 40px auto;
+            justify-items: center;
         }
-
         .seg {
-            display:flex; flex-direction:column; align-items:center; gap:14px;
-            opacity:0; transform:translateY(28px) scale(.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            opacity: 1;
+            transform: translateY(28px) scale(.95);
         }
-        .seg.in { animation: segIn .65s cubic-bezier(.34,1.56,.64,1) forwards; }
-        @keyframes segIn { to { opacity:1; transform:translateY(0) scale(1); } }
-
         /* Ring */
         .ring-wrap {
             position:relative; width:170px; height:170px;
@@ -156,7 +162,9 @@
             position:absolute; top:12px; right:12px;
             font-size:18px; opacity:.7;
         }
+        
 
+        
         .seg-title {
             font-family: var(--font-display, monospace);
             font-size:13px; font-weight:700; letter-spacing:.08em;
@@ -282,11 +290,15 @@
            PAGE 2 — RESULTS
         ══════════════════════════════ */
         #page-results {
-            display:none; flex-direction:column;
-            align-items:center; justify-content:flex-start;
-            padding:30px 24px 70px;
-            position:relative; z-index:10;
+            display:none;
+            flex-direction:column;
+            align-items:center;
+            justify-content:flex-start;
+            padding:50px 24px 70px;
+            position:relative;
+            z-index:10;
             opacity:0;
+            width: 100%;
         }
         #page-results.enter {
             display:flex;
@@ -475,629 +487,633 @@
 </head>
 <body>
 
-<div class="particles" id="particles"></div>
+    <div class="particles" id="particles"></div>
 
-<!-- ══════ PAGE 1: SCORE RINGS ══════ -->
-<div id="page-scores">
-    <p class="eyebrow">AIRA · Interview Analysis</p>
-    <h1 class="page-h1">Your Performance</h1>
+    <!-- ══════ PAGE 1: SCORE RINGS ══════ -->
+    <div id="page-scores">
+        <p class="eyebrow">AIRA · Interview Analysis</p>
+        <h1 class="page-h1">Your Performance</h1>
 
-    <div class="rings-grid">
+        <div class="rings-grid">
 
-        <!-- Content -->
-        <div class="seg" id="seg-content">
-            <div class="ring-wrap" onclick="toggleDetail('content')">
-                <svg class="ring-svg" viewBox="0 0 170 170" style="overflow:visible">
-                    <circle class="r-bg"    cx="85" cy="85" r="70"/>
-                    <circle class="r-ticks" cx="85" cy="85" r="70"/>
-                    <circle class="r-glow"  cx="85" cy="85" r="70"
-                        id="glow-content" stroke="var(--c-content)"
-                        stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
-                    <circle class="r-arc"   cx="85" cy="85" r="70"
-                        id="arc-content" stroke="var(--c-content)"
-                        stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
-                </svg>
-                <div class="ring-inner">
-                    <div class="ring-num"   id="num-content">0</div>
-                    <div class="ring-denom">/ 100</div>
+            <!-- Content -->
+            <div class="seg" id="seg-content">
+                <div class="ring-wrap" onclick="toggleDetail('content')">
+                    <svg class="ring-svg" viewBox="0 0 170 170" style="overflow:visible">
+                        <circle class="r-bg"    cx="85" cy="85" r="70"/>
+                        <circle class="r-ticks" cx="85" cy="85" r="70"/>
+                        <circle class="r-glow"  cx="85" cy="85" r="70"
+                            id="glow-content" stroke="var(--c-content)"
+                            stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
+                        <circle class="r-arc"   cx="85" cy="85" r="70"
+                            id="arc-content" stroke="var(--c-content)"
+                            stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
+                    </svg>
+                    <div class="ring-inner">
+                        <div class="ring-num"   id="num-content">0</div>
+                        <div class="ring-denom">/ 100</div>
+                    </div>
                 </div>
-                <div class="ring-icon">💬</div>
+                <div class="seg-title">Content Relevancy</div>
+                <div class="seg-sub">30% · tap for details</div>
+                <div class="seg-detail" id="detail-content">
+                    <div class="dpill"><b>Addresses Question</b><span id="d-addr">—</span></div>
+                    <div class="dpill"><b>Questions Answered</b><span id="d-qnum">—</span></div>
+                    <div class="dpill" id="d-cfb">—</div>
+                </div>
             </div>
-            <div class="seg-title">Content Relevancy</div>
-            <div class="seg-sub">30% · tap for details</div>
-            <div class="seg-detail" id="detail-content">
-                <div class="dpill"><b>Addresses Question</b><span id="d-addr">—</span></div>
-                <div class="dpill"><b>Questions Answered</b><span id="d-qnum">—</span></div>
-                <div class="dpill" id="d-cfb">—</div>
+
+            <!-- Audio -->
+            <div class="seg" id="seg-audio">
+                <div class="ring-wrap" onclick="toggleDetail('audio')">
+                    <svg class="ring-svg" viewBox="0 0 170 170" style="overflow:visible">
+                        <circle class="r-bg"    cx="85" cy="85" r="70"/>
+                        <circle class="r-ticks" cx="85" cy="85" r="70"/>
+                        <circle class="r-glow"  cx="85" cy="85" r="70"
+                            id="glow-audio" stroke="var(--c-audio)"
+                            stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
+                        <circle class="r-arc"   cx="85" cy="85" r="70"
+                            id="arc-audio" stroke="var(--c-audio)"
+                            stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
+                    </svg>
+                    <div class="ring-inner">
+                        <div class="ring-num"   id="num-audio">0</div>
+                        <div class="ring-denom">/ 100</div>
+                    </div>
+                </div>
+                <div class="seg-title">Audio Quality</div>
+                <div class="seg-sub">25% · tap for details</div>
+                <div class="seg-detail" id="detail-audio">
+                    <div class="dpill"><b>Filler Words</b><span id="d-fill">—</span></div>
+                    <div class="dpill"><b>Speaking Rate</b><span id="d-wpm">—</span></div>
+                    <div class="dpill"><b>Clarity</b><span id="d-clar">—</span></div>
+                    <div class="dpill" id="d-afb">—</div>
+                </div>
+            </div>
+
+            <!-- Eye Contact -->
+            <div class="seg" id="seg-eye">
+                <div class="ring-wrap" onclick="toggleDetail('eye')">
+                    <svg class="ring-svg" viewBox="0 0 170 170" style="overflow:visible">
+                        <circle class="r-bg"    cx="85" cy="85" r="70"/>
+                        <circle class="r-ticks" cx="85" cy="85" r="70"/>
+                        <circle class="r-glow"  cx="85" cy="85" r="70"
+                            id="glow-eye" stroke="var(--c-eye)"
+                            stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
+                        <circle class="r-arc"   cx="85" cy="85" r="70"
+                            id="arc-eye" stroke="var(--c-eye)"
+                            stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
+                    </svg>
+                    <div class="ring-inner">
+                        <div class="ring-num"   id="num-eye">0</div>
+                        <div class="ring-denom">/ 100</div>
+                    </div>
+                </div>
+                <div class="seg-title">Eye Contact</div>
+                <div class="seg-sub">25% · tap for details</div>
+                <div class="seg-detail" id="detail-eye">
+                    <div class="dpill"><b>Camera Focus</b><span id="d-foc">—</span></div>
+                    <div class="dpill"><b>Engagement</b><span id="d-eng">—</span></div>
+                    <div class="dpill" id="d-efb">—</div>
+                </div>
+            </div>
+
+            <!-- Body Language -->
+            <div class="seg" id="seg-emotion">
+                <div class="ring-wrap" onclick="toggleDetail('emotion')">
+                    <svg class="ring-svg" viewBox="0 0 170 170" style="overflow:visible">
+                        <circle class="r-bg"    cx="85" cy="85" r="70"/>
+                        <circle class="r-ticks" cx="85" cy="85" r="70"/>
+                        <circle class="r-glow"  cx="85" cy="85" r="70"
+                            id="glow-emotion" stroke="var(--c-emotion)"
+                            stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
+                        <circle class="r-arc"   cx="85" cy="85" r="70"
+                            id="arc-emotion" stroke="var(--c-emotion)"
+                            stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
+                    </svg>
+                    <div class="ring-inner">
+                        <div class="ring-num"   id="num-emotion">0</div>
+                        <div class="ring-denom">/ 100</div>
+                    </div>
+                </div>
+
+                <div class="seg-title">Body Language</div>
+                <div class="seg-sub">20% · tap for details</div>
+                <div class="seg-detail" id="detail-emotion">
+                    <div class="dpill"><b>Confidence</b><span id="d-conf">—</span></div>
+                    <div class="dpill"><b>Enthusiasm</b><span id="d-enth">—</span></div>
+                    <div class="dpill" id="d-bfb">—</div>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="reveal-btn" id="revealBtn" onclick="startReveal()">
+            ⚡ Reveal Your Grade
+        </button>
+    </div>
+
+    <!-- ══════ GRADE OVERLAY ══════ -->
+    <div class="go" id="go">
+        <div class="go-brk tl"></div>
+        <div class="go-brk tr"></div>
+        <div class="go-brk bl"></div>
+        <div class="go-brk br"></div>
+        <div class="go-letter" id="goLetter"></div>
+    </div>
+    <div class="flash-el" id="flashEl"></div>
+
+    <!-- ══════ PAGE 2: RESULTS ══════ -->
+    <div id="page-results">
+
+        <div class="grade-hero">
+            <div class="gh-ring">
+                <svg class="gh-ring-svg" viewBox="0 0 160 160">
+                    <defs>
+                        <linearGradient id="ghGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%"   stop-color="#FF71CE"/>
+                            <stop offset="50%"  stop-color="#B967FF"/>
+                            <stop offset="100%" stop-color="#01CDFE"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="80" cy="80" r="70" fill="none"
+                        stroke="rgba(255,255,255,.07)" stroke-width="3"/>
+                    <circle cx="80" cy="80" r="70" fill="none"
+                        stroke="url(#ghGrad)" stroke-width="3"
+                        stroke-linecap="round"
+                        stroke-dasharray="320 120"
+                        transform="rotate(-90 80 80)"/>
+                </svg>
+                <div class="gh-badge" id="ghBadge">—</div>
+            </div>
+            <div class="gh-hero-text">
+                <div class="gh-score">Overall: <em id="ghScore">0</em>/100</div>
+                <div class="gh-msg" id="ghMsg">—</div>
             </div>
         </div>
 
-        <!-- Audio -->
-        <div class="seg" id="seg-audio">
-            <div class="ring-wrap" onclick="toggleDetail('audio')">
-                <svg class="ring-svg" viewBox="0 0 170 170" style="overflow:visible">
-                    <circle class="r-bg"    cx="85" cy="85" r="70"/>
-                    <circle class="r-ticks" cx="85" cy="85" r="70"/>
-                    <circle class="r-glow"  cx="85" cy="85" r="70"
-                        id="glow-audio" stroke="var(--c-audio)"
-                        stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
-                    <circle class="r-arc"   cx="85" cy="85" r="70"
-                        id="arc-audio" stroke="var(--c-audio)"
-                        stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
-                </svg>
-                <div class="ring-inner">
-                    <div class="ring-num"   id="num-audio">0</div>
-                    <div class="ring-denom">/ 100</div>
-                </div>
-                <div class="ring-icon">🎤</div>
+        <div class="res-layout">
+            <div class="rc rc-strengths" id="rc-s">
+                <div class="rc-title">💪 Strengths</div>
+                <ul class="ins-list" id="strengthsList"></ul>
             </div>
-            <div class="seg-title">Audio Quality</div>
-            <div class="seg-sub">25% · tap for details</div>
-            <div class="seg-detail" id="detail-audio">
-                <div class="dpill"><b>Filler Words</b><span id="d-fill">—</span></div>
-                <div class="dpill"><b>Speaking Rate</b><span id="d-wpm">—</span></div>
-                <div class="dpill"><b>Clarity</b><span id="d-clar">—</span></div>
-                <div class="dpill" id="d-afb">—</div>
+            <div class="rc rc-weaknesses" id="rc-w">
+                <div class="rc-title">📈 To Improve</div>
+                <ul class="ins-list" id="weaknessesList"></ul>
+            </div>
+            <div class="rc rc-advice" id="rc-a">
+                <div class="rc-title">💡 Personalized Advice</div>
+                <ul class="adv-list" id="adviceList"></ul>
             </div>
         </div>
 
-        <!-- Eye Contact -->
-        <div class="seg" id="seg-eye">
-            <div class="ring-wrap" onclick="toggleDetail('eye')">
-                <svg class="ring-svg" viewBox="0 0 170 170" style="overflow:visible">
-                    <circle class="r-bg"    cx="85" cy="85" r="70"/>
-                    <circle class="r-ticks" cx="85" cy="85" r="70"/>
-                    <circle class="r-glow"  cx="85" cy="85" r="70"
-                        id="glow-eye" stroke="var(--c-eye)"
-                        stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
-                    <circle class="r-arc"   cx="85" cy="85" r="70"
-                        id="arc-eye" stroke="var(--c-eye)"
-                        stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
-                </svg>
-                <div class="ring-inner">
-                    <div class="ring-num"   id="num-eye">0</div>
-                    <div class="ring-denom">/ 100</div>
-                </div>
-                <div class="ring-icon">👁️</div>
-            </div>
-            <div class="seg-title">Eye Contact</div>
-            <div class="seg-sub">25% · tap for details</div>
-            <div class="seg-detail" id="detail-eye">
-                <div class="dpill"><b>Camera Focus</b><span id="d-foc">—</span></div>
-                <div class="dpill"><b>Engagement</b><span id="d-eng">—</span></div>
-                <div class="dpill" id="d-efb">—</div>
-            </div>
-        </div>
-
-        <!-- Body Language -->
-        <div class="seg" id="seg-emotion">
-            <div class="ring-wrap" onclick="toggleDetail('emotion')">
-                <svg class="ring-svg" viewBox="0 0 170 170" style="overflow:visible">
-                    <circle class="r-bg"    cx="85" cy="85" r="70"/>
-                    <circle class="r-ticks" cx="85" cy="85" r="70"/>
-                    <circle class="r-glow"  cx="85" cy="85" r="70"
-                        id="glow-emotion" stroke="var(--c-emotion)"
-                        stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
-                    <circle class="r-arc"   cx="85" cy="85" r="70"
-                        id="arc-emotion" stroke="var(--c-emotion)"
-                        stroke-dasharray="439.8" stroke-dashoffset="439.8"/>
-                </svg>
-                <div class="ring-inner">
-                    <div class="ring-num"   id="num-emotion">0</div>
-                    <div class="ring-denom">/ 100</div>
-                </div>
-                <div class="ring-icon">😊</div>
-            </div>
-            <div class="seg-title">Body Language</div>
-            <div class="seg-sub">20% · tap for details</div>
-            <div class="seg-detail" id="detail-emotion">
-                <div class="dpill"><b>Confidence</b><span id="d-conf">—</span></div>
-                <div class="dpill"><b>Enthusiasm</b><span id="d-enth">—</span></div>
-                <div class="dpill" id="d-bfb">—</div>
-            </div>
+        <div class="res-actions" id="resActions">
+            <a href="home.html" class="act-btn btn-dash">← Dashboard</a>
+            <a href="home.html" class="act-btn btn-retry">🔄 Try Again</a>
         </div>
 
     </div>
 
-    <button class="reveal-btn" id="revealBtn" onclick="startReveal()">
-        ⚡ Reveal Your Grade
-    </button>
-</div>
+    <script>
+    // ==========  DATA ==========
+    let S = null; 
 
-<!-- ══════ GRADE OVERLAY ══════ -->
-<div class="go" id="go">
-    <div class="go-brk tl"></div>
-    <div class="go-brk tr"></div>
-    <div class="go-brk bl"></div>
-    <div class="go-brk br"></div>
-    <div class="go-letter" id="goLetter"></div>
-</div>
-<div class="flash-el" id="flashEl"></div>
-
-<!-- ══════ PAGE 2: RESULTS ══════ -->
-<div id="page-results">
-
-    <div class="grade-hero">
-        <div class="gh-ring">
-            <svg class="gh-ring-svg" viewBox="0 0 160 160">
-                <defs>
-                    <linearGradient id="ghGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%"   stop-color="#FF71CE"/>
-                        <stop offset="50%"  stop-color="#B967FF"/>
-                        <stop offset="100%" stop-color="#01CDFE"/>
-                    </linearGradient>
-                </defs>
-                <circle cx="80" cy="80" r="70" fill="none"
-                    stroke="rgba(255,255,255,.07)" stroke-width="3"/>
-                <circle cx="80" cy="80" r="70" fill="none"
-                    stroke="url(#ghGrad)" stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-dasharray="320 120"
-                    transform="rotate(-90 80 80)"/>
-            </svg>
-            <div class="gh-badge" id="ghBadge">—</div>
-        </div>
-        <div class="gh-hero-text">
-            <div class="gh-score">Overall: <em id="ghScore">0</em>/100</div>
-            <div class="gh-msg" id="ghMsg">—</div>
-        </div>
-    </div>
-
-    <div class="res-layout">
-        <div class="rc rc-strengths" id="rc-s">
-            <div class="rc-title">💪 Strengths</div>
-            <ul class="ins-list" id="strengthsList"></ul>
-        </div>
-        <div class="rc rc-weaknesses" id="rc-w">
-            <div class="rc-title">📈 To Improve</div>
-            <ul class="ins-list" id="weaknessesList"></ul>
-        </div>
-        <div class="rc rc-advice" id="rc-a">
-            <div class="rc-title">💡 Personalized Advice</div>
-            <ul class="adv-list" id="adviceList"></ul>
-        </div>
-    </div>
-
-    <div class="res-actions" id="resActions">
-        <a href="home.html" class="act-btn btn-dash">← Dashboard</a>
-        <a href="home.html" class="act-btn btn-retry">🔄 Try Again</a>
-    </div>
-
-</div>
-
-<script>
-// ==========  DATA ==========
-let S = null; 
-
-function loadData() {
-    try {
-        const raw = sessionStorage.getItem('interviewResults');
-        S = raw ? calcAvg(JSON.parse(raw)) : demo();
-    } catch(e) { S = demo(); }
-}
-
-function calcAvg(results) {
-    if (!results?.length) return demo();
-    
-    let tC=0, tA=0, tE=0, tB=0;
-    let cC=0, aC=0, eC=0, bC=0;
-    let fil=0, wds=0, wpm=0, wN=0;
-    let conf=[], enth=[];
-    
-    results.forEach(r => {
-        if (!r.success) return;
-        if (r.content_relevancy && typeof r.content_relevancy.score === 'number') {
-            tC += r.content_relevancy.score;
-            cC++;
-        } else if (r.transcript) {
-            const wc = r.transcript.word_count || 0;
-            const dur = r.transcript.duration_seconds || 1;
-            let s = 75; 
-            if (wc >= 40 && wc <= 300) s += 10;
-            if (dur >= 20 && dur <= 150) s += 10;
-            tC += s;
-            cC++;
-        }
-        if (r.audio_quality) {
-            tA += r.audio_quality.overall_score;
-            aC++;
-            if (r.filler_analysis) {
-                fil += r.filler_analysis.total_fillers;
-                wds += r.transcript?.word_count || 0;
-            }
-            if (r.transcript?.words_per_minute) {
-                wpm += r.transcript.words_per_minute;
-                wN++;
-            }
-        }
-        if (r.eye_contact && typeof r.eye_contact.score === 'number') {
-            tE += r.eye_contact.score;
-            eC++;
-        } else {
-            tE += 70;
-            eC++;
-        }
-        if (r.body_language) {
-            tB += r.body_language.score;
-            bC++;
-            if (r.emotion_analysis) {
-                conf.push(r.emotion_analysis.confidence_score);
-                enth.push(r.emotion_analysis.enthusiasm_score);
-            }
-        }
-    });
-    const c = cC > 0 ? Math.round(tC / cC) : 70;
-    const a = aC > 0 ? Math.round(tA / aC) : 75;
-    const e = eC > 0 ? Math.round(tE / eC) : 70;
-    const b = bC > 0 ? Math.round(tB / bC) : 75;
-    
-    const avgW = wN > 0 ? Math.round(wpm / wN) : 145;
-    const fd = wds > 0 ? ((fil / wds) * 100).toFixed(1) : 0.5;
-    const ac = conf.length > 0 ? (conf.reduce((x,y) => x + y) / conf.length).toFixed(1) : 50;
-    const ae = enth.length > 0 ? (enth.reduce((x,y) => x + y) / enth.length).toFixed(1) : 50;
-    
-    return {
-        content: {
-            score: c,
-            addresses: c >= 70,
-            examples: results.length,
-            feedback: c >= 80 ? "Strong relevant answers." :
-                     c >= 60 ? "Good — add more specifics." :
-                     "Give more detailed answers."
-        },
-        audio: {
-            score: a,
-            fillers: fil,
-            fd: parseFloat(fd),
-            wpm: avgW,
-            clarity: a >= 85 ? "Excellent" : a >= 70 ? "Good" : "Needs Work",
-            feedback: a >= 85 ? "Excellent pace, minimal fillers." :
-                     a >= 70 ? "Reduce filler words slightly." :
-                     "Focus on clarity."
-        },
-        eye_contact: {
-            score: e,
-            focus: e,
-            engagement: e >= 75 ? "Good" : e >= 60 ? "Moderate" : "Low",
-            feedback: e >= 75 ? "Good camera focus." :
-                     "Look at the camera more consistently."
-        },
-        emotions: {
-            score: b,
-            confidence: ac >= 60 ? "High" : ac >= 40 ? "Moderate" : "Low",
-            enthusiasm: ae >= 60 ? "High" : ae >= 40 ? "Good" : "Low",
-            feedback: b >= 80 ? "Strong confidence shown." :
-                     b >= 60 ? "Good body language." :
-                     "Work on appearing more confident."
-        }
-    };
-}
-
-function demo() {
-    return {
-        content:    { score:85, addresses:true, examples:5,  feedback:"Strong answers with specific examples." },
-        audio:      { score:92, fillers:3, fd:0.6, wpm:148,  clarity:"Excellent", feedback:"Excellent pace, minimal fillers." },
-        eye_contact:{ score:70, focus:70,  engagement:"Good",feedback:"Maintained good camera focus." },
-        emotions:   { score:80, confidence:"High", enthusiasm:"Good", feedback:"Projected strong confidence." }
-    };
-}
-
-//========== INIT ==========
-const CIRC = 2 * Math.PI * 70; 
-
-function init() {
-    particles();
-    loadData();
-    fillDetails();
-    ['content','audio','eye','emotion'].forEach((k,i) => {
-        setTimeout(() => document.getElementById('seg-'+k).classList.add('in'), 180 + i*140);
-    });
-    setTimeout(animArcs, 850);
-}
-
-function fillDetails() {
-    document.getElementById('d-addr').textContent = S.content.addresses ? '✅ Yes' : '❌ No';
-    document.getElementById('d-qnum').textContent = S.content.examples + ' questions';
-    document.getElementById('d-cfb').textContent  = S.content.feedback;
-    document.getElementById('d-fill').textContent = `${S.audio.fillers} (${S.audio.fd}%)`;
-    document.getElementById('d-wpm').textContent  = S.audio.wpm + ' WPM';
-    document.getElementById('d-clar').textContent = S.audio.clarity;
-    document.getElementById('d-afb').textContent  = S.audio.feedback;
-    document.getElementById('d-foc').textContent  = S.eye_contact.focus + '%';
-    document.getElementById('d-eng').textContent  = S.eye_contact.engagement;
-    document.getElementById('d-efb').textContent  = S.eye_contact.feedback;
-    document.getElementById('d-conf').textContent = S.emotions.confidence;
-    document.getElementById('d-enth').textContent = S.emotions.enthusiasm;
-    document.getElementById('d-bfb').textContent  = S.emotions.feedback;
-}
-
-function animArcs() {
-    [
-        { key:'content',  score: S.content.score },
-        { key:'audio',    score: S.audio.score },
-        { key:'eye',      score: S.eye_contact.score },
-        { key:'emotion',  score: S.emotions.score }
-    ].forEach(({key,score},i) => {
-        setTimeout(() => {
-            const off = CIRC - (score/100)*CIRC;
-            document.getElementById('arc-'+key).style.strokeDashoffset  = off;
-            document.getElementById('glow-'+key).style.strokeDashoffset = off;
-            countUp('num-'+key, score);
-        }, i*260);
-    });
-}
-
-function countUp(id, target) {
-    const el = document.getElementById(id);
-    let v = 0; const step = target / 45;
-    const iv = setInterval(() => {
-        v = Math.min(v + step, target);
-        el.textContent = Math.round(v);
-        if (v >= target) clearInterval(iv);
-    }, 42);
-}
-
-function toggleDetail(k) {
-    document.getElementById('detail-'+k).classList.toggle('open');
-}
-
-//========== AUDIO ==========
-const GRADES = ['F','D','C','B','A','S'];
-const audioCache = {};
-GRADES.forEach(g => {
-    audioCache[g] = new Audio(`${g}.mp3`);
-    audioCache[g].preload = 'auto';
-});
-
-function playSound(grade) {
-    try {
-        audioCache[grade].currentTime = 0;
-        audioCache[grade].play().catch(e => console.log('Audio blocked:', e));
-    } catch(e) { console.log('Audio error:', e); }
-}
-
-//========== GRADE REVEAL ==========
-async function saveInterviewSummary(grade, score) {
-    const username = sessionStorage.getItem('aira_user') || localStorage.getItem('aira_user');
-    const jobRole = JSON.parse(sessionStorage.getItem('interviewPreferences') || '{}').jobRole || 'Unknown';
-    
-    if (!username) {
-        console.warn('No username, skipping save');
-        return;
+    function loadData() {
+        try {
+            const raw = sessionStorage.getItem('interviewResults');
+            S = raw ? calcAvg(JSON.parse(raw)) : demo();
+        } catch(e) { S = demo(); }
     }
-    
-    const summary = {
-        interview_id: `interview_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        username: username,
-        timestamp: new Date().toISOString(),
-        job_role: jobRole,
-        grade: grade,
-        overall_score: score
-    };
-    
-    try {
-        const response = await fetch('http://localhost:8000/api/interviews/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(summary)
-        });
+
+    function calcAvg(results) {
+        if (!results?.length) return demo();
         
-        if (response.ok) console.log('✅ Interview saved');
-    } catch (error) {
-        console.error('❌ Save error:', error);
+        let tC=0, tA=0, tE=0, tB=0;
+        let cC=0, aC=0, eC=0, bC=0;
+        let fil=0, wds=0, wpm=0, wN=0;
+        let conf=[], enth=[];
+        
+        results.forEach(r => {
+            if (!r.success) return;
+            
+            // Content score - use transcript length as proxy
+            if (r.transcript && r.transcript.length > 0) {
+                const wc = r.transcript.split(' ').length;
+                let s = 40 + Math.min(40, wc / 10); // Scale from 40-80
+                tC += s;
+                cC++;
+            } else {
+                tC += 30; // Low score for no/minimal response
+                cC++;
+            }
+            
+            // Audio quality - use speaking stats
+            if (r.analysis?.speaking_stats) {
+                const wpm = r.analysis.speaking_stats.words_per_minute || 0;
+                let aScore = 50;
+                if (wpm >= 120 && wpm <= 150) aScore = 90;
+                else if (wpm >= 100 && wpm <= 170) aScore = 75;
+                else if (wpm > 0) aScore = 65;
+                tA += aScore;
+                aC++;
+            }
+            
+            // Eye contact - use avg_score from analysis
+            if (r.analysis?.eye_contact?.avg_score !== undefined) {
+                tE += Math.round(r.analysis.eye_contact.avg_score * 100);
+                eC++;
+            } else {
+                tE += 50;
+                eC++;
+            }
+            
+            // Body language & emotions - use emotion scores
+            if (r.analysis?.emotions) {
+                const conf_score = r.analysis.emotions.confidence_score || 0;
+                const enth_score = r.analysis.emotions.enthusiasm_score || 0;
+                const prof_score = r.analysis.emotions.professionalism_score || 0;
+                
+                tB += Math.round((conf_score + prof_score) / 2);
+                bC++;
+                
+                conf.push(conf_score);
+                enth.push(enth_score);
+            }
+        });
+        const c = cC > 0 ? Math.round(tC / cC) : 70;
+        const a = aC > 0 ? Math.round(tA / aC) : 75;
+        const e = eC > 0 ? Math.round(tE / eC) : 70;
+        const b = bC > 0 ? Math.round(tB / bC) : 75;
+        
+        const avgW = wN > 0 ? Math.round(wpm / wN) : 145;
+        const fd = wds > 0 ? ((fil / wds) * 100).toFixed(1) : 0.5;
+        const ac = conf.length > 0 ? (conf.reduce((x,y) => x + y) / conf.length).toFixed(1) : 50;
+        const ae = enth.length > 0 ? (enth.reduce((x,y) => x + y) / enth.length).toFixed(1) : 50;
+        
+        return {
+            content: {
+                score: c,
+                addresses: c >= 70,
+                examples: results.length,
+                feedback: c >= 80 ? "Strong relevant answers." :
+                        c >= 60 ? "Good — add more specifics." :
+                        "Give more detailed answers."
+            },
+            audio: {
+                score: a,
+                fillers: fil,
+                fd: parseFloat(fd),
+                wpm: avgW,
+                clarity: a >= 85 ? "Excellent" : a >= 70 ? "Good" : "Needs Work",
+                feedback: a >= 85 ? "Excellent pace, minimal fillers." :
+                        a >= 70 ? "Reduce filler words slightly." :
+                        "Focus on clarity."
+            },
+            eye_contact: {
+                score: e,
+                focus: e,
+                engagement: e >= 75 ? "Good" : e >= 60 ? "Moderate" : "Low",
+                feedback: e >= 75 ? "Good camera focus." :
+                        "Look at the camera more consistently."
+            },
+            emotions: {
+                score: b,
+                confidence_score: parseFloat(ac),
+                enthusiasm_score: parseFloat(ae),
+                confidence: ac >= 60 ? "High" : ac >= 40 ? "Moderate" : "Low",
+                enthusiasm: ae >= 60 ? "High" : ae >= 40 ? "Good" : "Low",
+                feedback: b >= 80 ? "Strong confidence shown." :
+                        b >= 60 ? "Good body language." :
+                        "Work on appearing more confident."
+            }
+        };
     }
-}
 
-async function startReveal() {
-    document.getElementById('revealBtn').disabled = true;
-
-    const overall = Math.round(
-        S.content.score*.30 + S.audio.score*.25 +
-        S.eye_contact.score*.25 + S.emotions.score*.20
-    );
-    const grade = toGrade(overall);
-    document.getElementById('page-scores').classList.add('exit');
-    await wait(500);
-    const go = document.getElementById('go');
-    go.classList.add('show');
-    await wait(280);
-    const fi = GRADES.indexOf(grade);
-    const el = document.getElementById('goLetter');
-    for (let i=0; i<=fi; i++) {
-        const g = GRADES[i], last = i===fi;
-        el.className = `go-letter gl-${g} ${last?'final':'pop'}`;
-        el.textContent = g;
-        playSound(g);
-        if (last) { await wait(180); flash(); }
-        await wait(last ? 1200 : 450);
+    function demo() {
+        return {
+            content:    { score:85, addresses:true, examples:5,  feedback:"Strong answers with specific examples." },
+            audio:      { score:92, fillers:3, fd:0.6, wpm:148,  clarity:"Excellent", feedback:"Excellent pace, minimal fillers." },
+            eye_contact:{ score:70, focus:70,  engagement:"Good",feedback:"Maintained good camera focus." },
+            emotions:   { score:80, confidence:"High", enthusiasm:"Good", feedback:"Projected strong confidence." }
+        };
     }
-    go.classList.remove('show'); go.classList.add('hide');
-    await wait(480);
-    go.classList.remove('hide');
-    buildResults(grade, overall);
-    await saveInterviewSummary(grade, overall);
-    await wait(80);
-    const rp = document.getElementById('page-results');
-    rp.classList.add('enter');
-    window.scrollTo({ top: 0, behavior:'smooth' });
-    staggerResults(overall);
-}
 
-function toGrade(s) {
-    if(s>=90) return 'S'; if(s>=80) return 'A';
-    if(s>=70) return 'B'; if(s>=60) return 'C';
-    if(s>=50) return 'D'; return 'F';
-}
+    //========== INIT ==========
+    const CIRC = 2 * Math.PI * 70; 
 
-function flash() {
-    const f = document.getElementById('flashEl');
-    f.classList.add('pop');
-    setTimeout(() => f.classList.remove('pop'), 380);
-}
+    function init() {
+        particles();
+        loadData();
+        fillDetails();
+        ['content','audio','eye','emotion'].forEach((k,i) => {
+            setTimeout(() => document.getElementById('seg-'+k).classList.add('in'), 180 + i*140);
+        });
+        setTimeout(animArcs, 850);
+    }
 
-//========== BUILD RESULTS ==========
-const GC = { S:'#fbe238', A:'#05FFA1', B:'#01CDFE', C:'#FFFB96', D:'#f49829', F:'#FF71CE' };
-const GM = {
-    S:'🌟 LEGENDARY · PERFECT 🌟',   A:'✨ EXCELLENT · OUTSTANDING ✨',
-    B:'💫 GREAT · WELL DONE 💫',      C:'👍 GOOD · KEEP IMPROVING 👍',
-    D:'📈 NEEDS WORK 📈',             F:'💪 KEEP PRACTICING 💪'
-};
+    function fillDetails() {
+        document.getElementById('d-addr').textContent = S.content.addresses ? '✅ Yes' : '❌ No';
+        document.getElementById('d-qnum').textContent = S.content.examples + ' questions';
+        document.getElementById('d-cfb').textContent  = S.content.feedback;
+        document.getElementById('d-fill').textContent = `${S.audio.fillers} (${S.audio.fd}%)`;
+        document.getElementById('d-wpm').textContent  = S.audio.wpm + ' WPM';
+        document.getElementById('d-clar').textContent = S.audio.clarity;
+        document.getElementById('d-afb').textContent  = S.audio.feedback;
+        document.getElementById('d-foc').textContent  = S.eye_contact.focus + '%';
+        document.getElementById('d-eng').textContent  = S.eye_contact.engagement;
+        document.getElementById('d-efb').textContent  = S.eye_contact.feedback;
+        document.getElementById('d-conf').textContent = S.emotions.confidence;
+        document.getElementById('d-enth').textContent = S.emotions.enthusiasm;
+        document.getElementById('d-bfb').textContent  = S.emotions.feedback;
+    }
 
-function buildResults(grade, overall) {
-    const b = document.getElementById('ghBadge');
-    b.textContent = grade;
-    b.style.color = GC[grade];
-    b.style.textShadow = `0 0 55px ${GC[grade]}`;
-    document.getElementById('ghScore').textContent = overall;
-    document.getElementById('ghMsg').textContent   = GM[grade];
-    const str=[], wk=[];
-    if(S.content.score>=80)       str.push({i:'✅',t:'Strong content — answers address questions directly'});
-    else if(S.content.score<60)   wk.push( {i:'📈',t:'Content could be more relevant to questions asked'});
-    if(S.audio.score>=85)         str.push({i:'✅',t:'Excellent audio quality with minimal filler words'});
-    else if(S.audio.score<70)     wk.push( {i:'📈',t:'Reduce filler words for a cleaner delivery'});
-    if(S.eye_contact.score>=75)   str.push({i:'✅',t:'Good eye contact and camera engagement'});
-    else if(S.eye_contact.score<60) wk.push({i:'📈',t:'Maintain more consistent eye contact with the camera'});
-    if(S.emotions.confidence==='High')  str.push({i:'✅',t:'Projected strong confidence throughout'});
-    else if(S.emotions.confidence==='Low') wk.push({i:'📈',t:'Work on appearing more confident on camera'});
-    if(S.emotions.enthusiasm==='High')  str.push({i:'✅',t:'High enthusiasm and positive energy'});
-    fillList('strengthsList', str.length ? str : [{i:'💪',t:"Keep practising — you'll get there!"}], 'ins');
-    fillList('weaknessesList', wk.length ? wk  : [{i:'🎉',t:'No major weaknesses detected!'}], 'ins');
-    const adv = fallbackAdv();
-    fillList('adviceList', adv.map(t=>({t})), 'adv');
-    fetchAdv(grade, overall).then(a => {
-        if (a?.length) {
-            fillList('adviceList', a.map(t=>({t})), 'adv');
-            document.querySelectorAll('.adv-list li').forEach((li,i) => {
-                li.style.opacity=0; li.classList.remove('in');
-                setTimeout(() => li.classList.add('in'), i*140);
+    function animArcs() {
+        [
+            { key:'content',  score: S.content.score },
+            { key:'audio',    score: S.audio.score },
+            { key:'eye',      score: S.eye_contact.score },
+            { key:'emotion',  score: S.emotions.score }
+        ].forEach(({key,score},i) => {
+            setTimeout(() => {
+                const off = CIRC - (score/100)*CIRC;
+                document.getElementById('arc-'+key).style.strokeDashoffset  = off;
+                document.getElementById('glow-'+key).style.strokeDashoffset = off;
+                countUp('num-'+key, score);
+            }, i*260);
+        });
+    }
+
+    function countUp(id, target) {
+        const el = document.getElementById(id);
+        let v = 0; const step = target / 45;
+        const iv = setInterval(() => {
+            v = Math.min(v + step, target);
+            el.textContent = Math.round(v);
+            if (v >= target) clearInterval(iv);
+        }, 42);
+    }
+
+    function toggleDetail(k) {
+        document.getElementById('detail-'+k).classList.toggle('open');
+    }
+
+    //========== AUDIO ==========
+    const GRADES = ['F','D','C','B','A','S'];
+    const audioCache = {};
+    GRADES.forEach(g => {
+        audioCache[g] = new Audio(`${g}.mp3`);
+        audioCache[g].preload = 'auto';
+    });
+
+    function playSound(grade) {
+        try {
+            audioCache[grade].currentTime = 0;
+            audioCache[grade].play().catch(e => console.log('Audio blocked:', e));
+        } catch(e) { console.log('Audio error:', e); }
+    }
+
+    //========== GRADE REVEAL ==========
+    async function saveInterviewSummary(grade, score) {
+        const username = sessionStorage.getItem('aira_user') || localStorage.getItem('aira_user');
+        const jobRole = JSON.parse(sessionStorage.getItem('interviewPreferences') || '{}').jobRole || 'Unknown';
+        
+        if (!username) {
+            console.warn('No username, skipping save');
+            return;
+        }
+        
+        const summary = {
+            interview_id: `interview_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+            username: username,
+            timestamp: new Date().toISOString(),
+            job_role: jobRole,
+            grade: grade,
+            overall_score: score
+        };
+        
+        try {
+            const response = await fetch('http://localhost:8000/api/interviews/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(summary)
             });
+            
+            if (response.ok) console.log('✅ Interview saved');
+        } catch (error) {
+            console.error('❌ Save error:', error);
         }
-    }).catch(()=>{});
-}
-
-function fillList(id, items, type) {
-    const ul = document.getElementById(id);
-    ul.innerHTML = items.map(item => {
-        if (type==='ins') return `<li><span class="li-icon">${item.i}</span>${item.t}</li>`;
-        return `<li>${item.t}</li>`;
-    }).join('');
-}
-
-function fallbackAdv() {
-    const a=[];
-    if(S.content.score<75)     a.push('Structure answers with the STAR method (Situation, Task, Action, Result)');
-    if(S.audio.score<75)       a.push('Record yourself and identify filler words to eliminate');
-    if(S.eye_contact.score<70) a.push('Place a sticky note near your camera to maintain eye contact');
-    if(S.emotions.score<70)    a.push('Practice power poses before interviews to boost confidence');
-    if(!a.length){
-        a.push('Excellent performance! Keep practising to maintain consistency');
-        a.push('Consider mock interviews for continued growth');
     }
-    return a;
-}
 
-async function fetchAdv(grade, overall) {
-    const strengths = [];
-    const weaknesses = [];
-    if(S.content.score >= 80) 
-        strengths.push('Strong content - answers address questions directly');
-    else if(S.content.score < 60) 
-        weaknesses.push('Content could be more relevant to questions asked');
-    if(S.audio.score >= 85) 
-        strengths.push('Excellent audio quality with minimal filler words');
-    else if(S.audio.score < 70) 
-        weaknesses.push('Reduce filler words for cleaner delivery');
-    if(S.eye_contact.score >= 75) 
-        strengths.push('Good eye contact and camera engagement');
-    else if(S.eye_contact.score < 60) 
-        weaknesses.push('Maintain more consistent eye contact with camera');
-    if(S.emotions.confidence === 'High') 
-        strengths.push('Projected strong confidence throughout');
-    else if(S.emotions.confidence === 'Low') 
-        weaknesses.push('Work on appearing more confident on camera');
-    
-    if(S.emotions.enthusiasm === 'High') 
-        strengths.push('High enthusiasm and positive energy');   
-    try {
-        const res = await fetch('http://localhost:8000/api/feedback/generate', {
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ 
-                scores: { 
-                    content: S.content.score, 
-                    audio: S.audio.score,
-                    eye_contact: S.eye_contact.score, 
-                    body_language: S.emotions.score, 
-                    overall: overall
-                }, 
-                grade: grade,
-                strengths: strengths,
-                weaknesses: weaknesses,
-                details: { 
-                    filler_words: S.audio.fillers, 
-                    wpm: S.audio.wpm,
-                    confidence: S.emotions.confidence, 
-                    enthusiasm: S.emotions.enthusiasm 
-                } 
-            })
-        });
+    async function startReveal() {
+        document.getElementById('revealBtn').disabled = true;
+
+        const overall = Math.round(
+            S.content.score*.30 + S.audio.score*.25 +
+            S.eye_contact.score*.25 + S.emotions.score*.20
+        );
+        const grade = toGrade(overall);
+        document.getElementById('page-scores').classList.add('exit');
+        await wait(500);
+        const go = document.getElementById('go');
+        go.classList.add('show');
+        await wait(280);
+        const fi = GRADES.indexOf(grade);
+        const el = document.getElementById('goLetter');
+        for (let i=0; i<=fi; i++) {
+            const g = GRADES[i], last = i===fi;
+            el.className = `go-letter gl-${g} ${last?'final':'pop'}`;
+            el.textContent = g;
+            playSound(g);
+            if (last) { await wait(180); flash(); }
+            await wait(last ? 1200 : 450);
+        }
+        go.classList.remove('show'); go.classList.add('hide');
+        await wait(480);
+        go.classList.remove('hide');
+        buildResults(grade, overall);
+        await saveInterviewSummary(grade, overall);
+        await wait(80);
+        const rp = document.getElementById('page-results');
+        rp.classList.add('enter');
+        window.scrollTo({ top: 0, behavior:'smooth' });
+        staggerResults(overall);
+    }
+
+    function toGrade(s) {
+        if(s>=90) return 'S'; if(s>=80) return 'A';
+        if(s>=70) return 'B'; if(s>=60) return 'C';
+        if(s>=50) return 'D'; return 'F';
+    }
+
+    function flash() {
+        const f = document.getElementById('flashEl');
+        f.classList.add('pop');
+        setTimeout(() => f.classList.remove('pop'), 380);
+    }
+
+    //========== BUILD RESULTS ==========
+    const GC = { S:'#fbe238', A:'#05FFA1', B:'#01CDFE', C:'#FFFB96', D:'#f49829', F:'#FF71CE' };
+    const GM = {
+        S:'🌟 LEGENDARY · PERFECT 🌟',   A:'✨ EXCELLENT · OUTSTANDING ✨',
+        B:'💫 GREAT · WELL DONE 💫',      C:'👍 GOOD · KEEP IMPROVING 👍',
+        D:'📈 NEEDS WORK 📈',             F:'💪 KEEP PRACTICING 💪'
+    };
+
+    function buildResults(grade, overall) {
+        const b = document.getElementById('ghBadge');
+        b.textContent = grade;
+        b.style.color = GC[grade];
+        b.style.textShadow = `0 0 55px ${GC[grade]}`;
+        document.getElementById('ghScore').textContent = overall;
+        document.getElementById('ghMsg').textContent   = GM[grade];
+        const str=[], wk=[];
+        if(S.content.score>=80)       str.push({i:'✅',t:'Strong content — answers address questions directly'});
+        else if(S.content.score<60)   wk.push( {i:'📈',t:'Content could be more relevant to questions asked'});
+        if(S.audio.score>=85)         str.push({i:'✅',t:'Excellent audio quality with minimal filler words'});
+        else if(S.audio.score<70)     wk.push( {i:'📈',t:'Reduce filler words for a cleaner delivery'});
+        if(S.eye_contact.score>=75)   str.push({i:'✅',t:'Good eye contact and camera engagement'});
+        else if(S.eye_contact.score<60) wk.push({i:'📈',t:'Maintain more consistent eye contact with the camera'});
+        if(S.emotions.confidence==='High')  str.push({i:'✅',t:'Projected strong confidence throughout'});
+        else if(S.emotions.confidence==='Low') wk.push({i:'📈',t:'Work on appearing more confident on camera'});
+        if(S.emotions.enthusiasm==='High')  str.push({i:'✅',t:'High enthusiasm and positive energy'});
+        fillList('strengthsList', str.length ? str : [{i:'💪',t:"Keep practising — you'll get there!"}], 'ins');
+        fillList('weaknessesList', wk.length ? wk  : [{i:'🎉',t:'No major weaknesses detected!'}], 'ins');
+        const adv = fallbackAdv();
+        fillList('adviceList', adv.map(t=>({t})), 'adv');
+        fetchAdv(grade, overall).then(a => {
+            if (a?.length) {
+                fillList('adviceList', a.map(t=>({t})), 'adv');
+                document.querySelectorAll('.adv-list li').forEach((li,i) => {
+                    li.style.opacity=0; li.classList.remove('in');
+                    setTimeout(() => li.classList.add('in'), i*140);
+                });
+            }
+        }).catch(()=>{});
+    }
+
+    function fillList(id, items, type) {
+        const ul = document.getElementById(id);
+        ul.innerHTML = items.map(item => {
+            if (type==='ins') return `<li><span class="li-icon">${item.i}</span>${item.t}</li>`;
+            return `<li>${item.t}</li>`;
+        }).join('');
+    }
+
+    function fallbackAdv() {
+        const a=[];
+        if(S.content.score<75)     a.push('Structure answers with the STAR method (Situation, Task, Action, Result)');
+        if(S.audio.score<75)       a.push('Record yourself and identify filler words to eliminate');
+        if(S.eye_contact.score<70) a.push('Place a sticky note near your camera to maintain eye contact');
+        if(S.emotions.score<70)    a.push('Practice power poses before interviews to boost confidence');
+        if(!a.length){
+            a.push('Excellent performance! Keep practising to maintain consistency');
+            a.push('Consider mock interviews for continued growth');
+        }
+        return a;
+    }
+
+    async function fetchAdv(grade, overall) {
+        const strengths = [];
+        const weaknesses = [];
+        if(S.content.score >= 80) 
+            strengths.push('Strong content - answers address questions directly');
+        else if(S.content.score < 60) 
+            weaknesses.push('Content could be more relevant to questions asked');
+        if(S.audio.score >= 85) 
+            strengths.push('Excellent audio quality with minimal filler words');
+        else if(S.audio.score < 70) 
+            weaknesses.push('Reduce filler words for cleaner delivery');
+        if(S.eye_contact.score >= 75) 
+            strengths.push('Good eye contact and camera engagement');
+        else if(S.eye_contact.score < 60) 
+            weaknesses.push('Maintain more consistent eye contact with camera');
+        if(S.emotions.confidence === 'High') 
+            strengths.push('Projected strong confidence throughout');
+        else if(S.emotions.confidence === 'Low') 
+            weaknesses.push('Work on appearing more confident on camera');
         
-        if (!res.ok) {
-            console.error('API returned error:', res.status);
+        if(S.emotions.enthusiasm === 'High') 
+            strengths.push('High enthusiasm and positive energy');   
+        try {
+            const res = await fetch('http://localhost:8000/api/feedback/generate', {
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 
+                    scores: { 
+                        content: S.content.score, 
+                        audio: S.audio.score,
+                        eye_contact: S.eye_contact.score, 
+                        body_language: S.emotions.score, 
+                        overall: overall
+                    }, 
+                    grade: grade,
+                    strengths: strengths,
+                    weaknesses: weaknesses,
+                    details: { 
+                        filler_words: S.audio.fillers, 
+                        wpm: S.audio.wpm,
+                        confidence: S.emotions.confidence, 
+                        enthusiasm: S.emotions.enthusiasm 
+                    } 
+                })
+            });
+            
+            if (!res.ok) {
+                console.error('API returned error:', res.status);
+                return null;
+            }
+            
+            const data = await res.json();
+            console.log('✅ API Response:', data);
+            return data.advice || null;
+            
+        } catch(error) {
+            console.error('❌ API Call Failed:', error);
             return null;
         }
-        
-        const data = await res.json();
-        console.log('✅ API Response:', data);
-        return data.advice || null;
-        
-    } catch(error) {
-        console.error('❌ API Call Failed:', error);
-        return null;
     }
-}
 
-async function staggerResults(overall) {
-    await wait(200);
-    ['rc-s','rc-w','rc-a'].forEach((id,i) => {
-        setTimeout(() => document.getElementById(id).classList.add('in'), i*160);
-    });
-    await wait(520);
-    document.querySelectorAll('.ins-list li').forEach((li,i) => {
-        setTimeout(() => li.classList.add('in'), i*110);
-    });
-    document.querySelectorAll('.adv-list li').forEach((li,i) => {
-        setTimeout(() => li.classList.add('in'), 280 + i*130);
-    });
-    await wait(350);
-    document.getElementById('resActions').classList.add('in');
-    countUp2('ghScore', overall);
-}
-
-function countUp2(id, target) {
-    const el = document.getElementById(id);
-    el.textContent = '0';
-    let v=0; const step=target/50;
-    const iv=setInterval(()=>{ v=Math.min(v+step,target); el.textContent=Math.round(v); if(v>=target) clearInterval(iv); },38);
-}
-
-//========== PARTICLES ==========
-function particles() {
-    const c = document.getElementById('particles');
-    for (let i=0; i<32; i++) {
-        const d = document.createElement('div');
-        d.className = 'p-dot';
-        d.style.left = Math.random()*100+'%';
-        d.style.top  = Math.random()*100+'%';
-        d.style.setProperty('--d',     (14+Math.random()*12)+'s');
-        d.style.setProperty('--delay', Math.random()*18+'s');
-        c.appendChild(d);
+    async function staggerResults(overall) {
+        await wait(200);
+        ['rc-s','rc-w','rc-a'].forEach((id,i) => {
+            setTimeout(() => document.getElementById(id).classList.add('in'), i*160);
+        });
+        await wait(520);
+        document.querySelectorAll('.ins-list li').forEach((li,i) => {
+            setTimeout(() => li.classList.add('in'), i*110);
+        });
+        document.querySelectorAll('.adv-list li').forEach((li,i) => {
+            setTimeout(() => li.classList.add('in'), 280 + i*130);
+        });
+        await wait(350);
+        document.getElementById('resActions').classList.add('in');
+        countUp2('ghScore', overall);
     }
-}
 
-function wait(ms) { return new Promise(r=>setTimeout(r,ms)); }
+    function countUp2(id, target) {
+        const el = document.getElementById(id);
+        el.textContent = '0';
+        let v=0; const step=target/50;
+        const iv=setInterval(()=>{ v=Math.min(v+step,target); el.textContent=Math.round(v); if(v>=target) clearInterval(iv); },38);
+    }
 
-window.addEventListener('DOMContentLoaded', init);
-</script>
+    //========== PARTICLES ==========
+    function particles() {
+        const c = document.getElementById('particles');
+        for (let i=0; i<32; i++) {
+            const d = document.createElement('div');
+            d.className = 'p-dot';
+            d.style.left = Math.random()*100+'%';
+            d.style.top  = Math.random()*100+'%';
+            d.style.setProperty('--d',     (14+Math.random()*12)+'s');
+            d.style.setProperty('--delay', Math.random()*18+'s');
+            c.appendChild(d);
+        }
+    }
+
+    function wait(ms) { return new Promise(r=>setTimeout(r,ms)); }
+
+    window.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>

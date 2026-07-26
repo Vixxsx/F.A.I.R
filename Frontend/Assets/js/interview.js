@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ========== CAMERA SETUP ==========
+
 async function initializeCamera() {
     try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -48,26 +49,51 @@ async function initializeCamera() {
         window.location.href = 'home.html';
     }
 }
-
 // ========== FETCH QUESTIONS ==========
 async function fetchQuestions(settings) {
+    console.log('DEBUG 1: Settings path =', settings.path);
+    console.log('DEBUG 2: Is manual?', settings.path === 'manual');
+    console.log('🔍 DEBUG 3: Full settings object:', settings);
+    console.log('🔍 DEBUG 4: settings.questions:', settings.questions);
+    console.log('🔍 DEBUG 5: questions array length:', settings.questions?.length);
     showLoading('Generating Interview Questions', 'Please be patient...');
-   
+    
     try {
-        const response = await fetch(`${API_BASE_URL}/api/questions/generate`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
+        if (settings.path === 'manual') {
+            console.log('✅ ENTERED MANUAL MODE');
+            
+            const payload = {
                 jobRole: settings.jobRole,
+                education_lvl: settings.education_lvl,
+                degree: settings.degree,
+                company_type: settings.company_type,
                 difficulty: settings.difficulty,
-                count: settings.numQuestions || 5,
-                type: settings.interviewType
-            })
-        });
+                interview_type: settings.interview_type,
+                count: parseInt(settings.numQuestions) || 5
+            };
 
-        if (response.ok) {
-            const data = await response.json();
-            questions = data.questions || [];
+            console.log('📤 Payload:', payload);
+
+            const stringified = JSON.stringify(payload);
+            console.log('📝 Stringified JSON:', stringified);  // ← ADD THIS
+
+            const response = await fetch(`${API_BASE_URL}/api/questions/generate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: stringified  // ← USE stringified
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                questions = data.questions || [];
+                console.log('✅ Questions generated:', questions);
+            } else {
+                console.error('❌ Backend error:', response.status, await response.text());
+            }
+        } else if (settings.path === 'resume') {
+            console.log('Resume mode - skipping question generation');
+            // For resume mode, questions come from backend after upload
+            questions =settings.questions || [];
         }
     } catch (error) {
         console.error('❌ Failed to fetch questions:', error);

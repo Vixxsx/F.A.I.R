@@ -221,5 +221,61 @@ This project is licensed under the **MIT License**.
 <div align="center">
 
 **Made with ❤️ by the AIRA Team**
+```
+A.I.R.A
+├─ .txt
+├─ Backend
+│  ├─ api
+│  │  ├─ Auth_routes.py
+│  │  ├─ Feedback_routes.py
+│  │  ├─ History_routes.py
+│  │  ├─ Interview_routes.py
+│  │  ├─ Question_routes.py
+│  │  ├─ Resume_routes.py
+│  │  ├─ Video_routes.py
+│  │  └─ __init__.py
+│  ├─ Configuration
+│  │  └─ dummy1.txt
+│  ├─ main.py
+│  ├─ Models
+│  │  ├─ Content_Relevancy.py
+│  │  ├─ emotion_detector.py
+│  │  ├─ eye_tracker.py
+│  │  ├─ face_landmarker.task
+│  │  ├─ filler_word_detection.py
+│  │  ├─ Question_Generator.py
+│  │  ├─ whisper_stt.py
+│  │  ├─ _registry.py
+│  │  └─ __init__.py
+│  ├─ Tests
+│  │  ├─ Conftest.py
+│  │  ├─ Questions.py
+│  │  └─ __init__.py
+│  └─ Utilities
+│     ├─ audio_extract.py
+│     ├─ database.py
+│     ├─ Resume_parse.py
+│     ├─ video_utils.py
+│     └─ __init__.py
+├─ Frontend
+│  ├─ Assets
+│  │  ├─ audio
+│  │  └─ js
+│  │     ├─ auth.js
+│  │     ├─ home.js
+│  │     └─ interview.js
+│  ├─ Components
+│  │  └─ theme.css
+│  └─ Pages
+│     ├─ home.html
+│     ├─ interview.html
+│     ├─ interview_test.html
+│     ├─ Login.html
+│     ├─ register.html
+│     ├─ scorecard.html
+│     └─ start.html
+├─ pytest.ini
+├─ README.md
+└─ requirements.txt
 
-</div>
+```

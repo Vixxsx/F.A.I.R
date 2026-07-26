@@ -176,7 +176,11 @@ function calculatePasswordStrength(password) {
 function checkSession() {
     return localStorage.getItem('aira_user') || sessionStorage.getItem('aira_user');
 }
-
+flatpickr("#dob", {
+    dateFormat: "d/m/Y", // Forces dd/mm/yyyy
+    maxDate: "today",    // Disallows future dates for birthday
+    allowInput: true     // Lets users type or click the calendar
+});
 async function testBackendConnection() {
     try {
         const response = await fetch(`${API_BASE_URL}/api/auth/test`);

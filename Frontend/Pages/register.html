@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - AIRA</title>
     <link rel="stylesheet" href="../Components/theme.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         body {
             background: linear-gradient(135deg, #4a148c 0%, #6a1b9a 50%, #8e24aa 100%);
@@ -330,6 +333,7 @@
                 box-shadow: 0 0 40px rgba(255, 113, 206, 0.15);
             }
         }
+    
     </style>
 </head>
 <body>
@@ -386,10 +390,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Date of Birth</label>
+                        <label for="dob">Date of Birth</label>
                         <div class="input-container">
-                            <div class="input-container">
-                            <input type="date" id="dob">
+                            <input type="text" id="dob" placeholder="dd/mm/yyyy" name="dob" required>
                         </div>
                     </div>
 

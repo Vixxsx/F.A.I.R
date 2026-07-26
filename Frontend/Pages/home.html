@@ -157,7 +157,22 @@
             background: rgba(5,1,13,0.85);
             box-shadow: 0 0 20px rgba(255,113,206,0.35), inset 0 0 12px rgba(255,113,206,0.1);
         }
+        .perks-list {
+            list-style: none;
+            text-align: center;
+            margin-bottom: 40px;
+            opacity: 0.3;
+            transition: opacity 0.4s ease;
+        }
 
+        .panel-left:hover .perks-list,
+        .panel-right:hover .perks-list {
+            opacity: 1;
+        }
+
+        .panel-preview {
+            transition: all 0.4s ease;
+        }
         .form-group select {
             cursor: pointer;
             appearance: none;
@@ -166,6 +181,275 @@
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23FF71CE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 14px center;
+        }
+/* ========== SPLIT-SCREEN SIMULATOR ========== */
+        .simulator-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 1000;
+            background: #0b0c1b;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .simulator-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .split-panel {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 40px;
+            box-sizing: border-box;
+            text-align: center;
+            will-change: clip-path;
+        }
+
+        .panel-left {
+            background: linear-gradient(135deg, #0a2a3a 0%, #051e2b 100%);
+            z-index: 2;
+        }
+
+        .panel-right {
+            background: linear-gradient(135deg, #2d1a3a 0%, #1a0f2b 100%);
+            z-index: 1;
+        }
+
+        .panel-content-wrapper {
+            max-width: 520px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .panel-left .panel-content-wrapper {
+            left: 25%;
+            transform: translate(-50%, -50%);
+        }
+
+        .panel-right .panel-content-wrapper {
+            left: 75%;
+            transform: translate(-50%, -50%);
+        }
+
+        .panel-preview h2 {
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+            font-family: var(--font-display);
+        }
+
+        .panel-left .panel-preview h2 { 
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .panel-right .panel-preview h2 { 
+            background: linear-gradient(90deg, #e74dd8, #ff71ce);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .panel-preview p {
+            color: #9296c0;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .perks-list {
+            list-style: none;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .perks-list li {
+            font-size: 14px;
+            color: #00ffaa;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .hold-confirm-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .progress-container {
+            margin-bottom: 16px;
+        }
+
+        .progress-container svg {
+            filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.3));
+        }
+
+        .progress-ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 2;
+        }
+
+        .progress-ring-bar {
+            fill: none;
+            stroke: #00f2fe;
+            stroke-width: 2;
+            stroke-dasharray: 201;
+            stroke-dashoffset: 201;
+            transition: stroke 0.3s ease;
+        }
+
+        .panel-right .progress-ring-bar {
+            stroke: #e74dd8;
+        }
+
+        .hold-confirm-zone span {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: #6a6d8c;
+            text-transform: uppercase;
+        }
+
+        /* FORM VIEW */
+        .form-view-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0b0c1b;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .form-view-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .form-view-container {
+            background: rgba(20, 30, 60, 0.8);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            padding: 50px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .form-view-container h3 {
+            font-size: 28px;
+            color: #00f2fe;
+            margin-bottom: 12px;
+            font-family: var(--font-display);
+        }
+
+        .form-view-container p {
+            color: #9296c0;
+            margin-bottom: 30px;
+        }
+
+        .sim-form-group {
+            margin-bottom: 24px;
+        }
+
+        .sim-form-group label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #6a6d8c;
+            margin-bottom: 8px;
+            font-family: var(--font-mono);
+        }
+
+        .sim-form-group input,
+        .sim-form-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            border-radius: 4px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .sim-form-group input:focus,
+        .sim-form-group select:focus {
+            outline: none;
+            border-color: #00f2fe;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+            background: rgba(0, 242, 254, 0.05);
+        }
+
+        .upload-zone {
+            border: 2px dashed rgba(0, 242, 254, 0.3);
+            padding: 30px;
+            border-radius: 4px;
+            color: #6a6d8c;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .upload-zone:hover {
+            border-color: #00f2fe;
+            background: rgba(0, 242, 254, 0.05);
+        }
+
+        .sim-row-flex {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .sim-launch-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            border: none;
+            color: #0b0c1b;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+            transition: all 0.3s ease;
+            margin-top: 30px;
+        }
+
+        .sim-launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.5);
+        }
+
+        .sim-launch-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .select-wrap { position: relative; }
@@ -414,7 +698,7 @@
             color: white;
             box-shadow: 0 0 30px rgba(1,205,254,0.6), inset 0 0 20px rgba(1,205,254,0.15);
         }
-
+        
         @media (max-width: 768px) {
             .header { padding: 14px 20px; flex-wrap: wrap; gap: 12px; }
             .header-actions { width: 100%; justify-content: flex-end; }
@@ -424,6 +708,281 @@
             .modal-content { padding: 28px 20px; }
             .logout-card { padding: 30px 20px; }
             .logout-actions { flex-direction: column; }
+        }
+
+        /* ========== RESUME UPLOAD OVERLAY ========== */
+        .resume-upload-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(11, 12, 27, 0.95);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .resume-upload-overlay.active {
+            display: flex;
+        }
+
+        .resume-upload-card {
+            background: linear-gradient(135deg, rgba(20, 30, 60, 0.95) 0%, rgba(30, 20, 60, 0.95) 100%);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: 12px;
+            padding: 50px 40px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 242, 254, 0.2);
+            text-align: center;
+        }
+
+        /* SPINNER ANIMATIONS */
+        .upload-spinner, .parsing-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 242, 254, 0.2);
+            border-top: 4px solid #00f2fe;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* UPLOADING STATE */
+        .upload-state h3 {
+            font-size: 24px;
+            color: #00f2fe;
+            margin-bottom: 10px;
+        }
+
+        .upload-state p {
+            color: #9296c0;
+            font-size: 14px;
+        }
+
+        /* PARSING STATE */
+        .parsing-state h3 {
+            font-size: 24px;
+            color: #00f2fe;
+            margin-bottom: 25px;
+        }
+
+        .parsing-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric {
+            background: rgba(0, 242, 254, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+        }
+
+        .metric-label {
+            display: block;
+            color: #6a6d8c;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            display: block;
+            color: #00f2fe;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* SUCCESS STATE */
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .success-state h3 {
+            font-size: 24px;
+            color: #00ffaa;
+            margin-bottom: 20px;
+        }
+
+        .success-details {
+            background: rgba(0, 255, 170, 0.05);
+            border: 1px solid rgba(0, 255, 170, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .success-details p {
+            color: #9296c0;
+            font-size: 14px;
+            margin: 8px 0;
+        }
+
+        .success-details strong {
+            color: #00ffaa;
+        }
+
+        .success-message {
+            color: #00ffaa;
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        /* ERROR STATE */
+        .error-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .error-state h3 {
+            font-size: 24px;
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .error-message {
+            color: #ffaaaa;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .ats-issues {
+            text-align: left;
+            background: rgba(255, 107, 107, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .ats-issues h4 {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ats-issues ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ats-issues li {
+            color: #ffaaaa;
+            font-size: 13px;
+            margin-bottom: 6px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .ats-issues li:before {
+            content: "❌";
+            position: absolute;
+            left: 0;
+        }
+
+        .ats-tips {
+            text-align: left;
+            background: rgba(0, 242, 254, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 242, 254, 0.2);
+        }
+
+        .ats-tips h4 {
+            color: #00f2fe;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .ats-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .ats-tips li {
+            color: #9296c0;
+            font-size: 13px;
+            margin-bottom: 6px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .ats-tips li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00f2fe;
+            font-weight: bold;
+        }
+
+        .error-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        }
+
+        .try-again-btn, .manual-btn, .close-overlay-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .try-again-btn {
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            color: #0b0c1b;
+        }
+
+        .try-again-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 242, 254, 0.4);
+        }
+
+        .manual-btn {
+            background: rgba(233, 74, 216, 0.2);
+            color: #e94ad8;
+            border: 1px solid #e94ad8;
+        }
+
+        .manual-btn:hover {
+            background: rgba(233, 74, 216, 0.3);
+            box-shadow: 0 8px 20px rgba(233, 74, 216, 0.3);
+        }
+
+        .close-overlay-btn {
+            width: 100%;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            color: #0b0c1b;
+        }
+
+        .close-overlay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 242, 254, 0.4);
         }
 
         /* ══════════════════════════════════
@@ -724,7 +1283,6 @@
 
     <header class="header">
         <div class="welcome-section">
-            <div class="welcome-icon">👾</div>
             <div class="welcome-text">
                 <h2>Welcome back, <span id="username">User</span></h2>
                 <p>Ready to ace your next interview?</p>
@@ -739,74 +1297,168 @@
     <div class="container">
         <div class="setup-card">
             <div class="setup-header">
-                <h1>⚡ Setup Your Interview</h1>
-                <p>Configure your preferences and let AIRA's AI guide your performance analysis</p>
+                <h1>⚡ Ready for Your Interview?</h1>
+                <p>Choose your path and let AIRA guide your performance analysis</p>
             </div>
 
-            <form id="interviewForm" class="interview-form">
-                <div class="form-group">
-                    <label for="jobRole">💼 Job Role</label>
-                    <input type="text" id="jobRole" placeholder="e.g., Software Engineer" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="difficulty">⚡ Difficulty Level</label>
-                    <div class="select-wrap"><select id="difficulty" required>
-                        <option value="">Select Difficulty</option>
-                        <option value="beginner">😊 Beginner</option>
-                        <option value="intermediate" selected>😐 Intermediate</option>
-                        <option value="advanced">😤 Advanced</option>
-                    </select></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="numQuestions">🔢 Number of Questions</label>
-                    <input type="number" id="numQuestions" min="1" max="20" placeholder="e.g., 5" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="interviewType">🎯 Type of Interview</label>
-                    <div class="select-wrap"><select id="interviewType" required>
-                        <option value="">Select Type</option>
-                        <option value="behavioral">🗣️ Behavioral</option>
-                        <option value="technical">💻 Technical</option>
-                        <option value="mixed" selected>🎭 Mixed (Both)</option>
-                    </select></div>
-                </div>
-
-                <div class="form-group full-width">
-                    <button type="submit" class="start-btn">🚀 Start Interview</button>
-                </div>
-            </form>
+        <div style="text-align: center; margin: 40px 0;">
+            <button class="start-btn" onclick="showSplitScreen()">🚀 START INTERVIEW</button>
+        </div>
+        
+        <div class="history-container" style="margin-top: 60px;">
+            <div class="history-header">
+                <h2 style="
+                    font-family: var(--font-display);
+                    font-size: 20px;
+                    letter-spacing: 0.05em;
+                    background: linear-gradient(90deg, var(--secondary), var(--accent));
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    margin-bottom: 8px;
+                ">📊 Recent Interviews</h2>
+                <p style="
+                    font-size: 13px;
+                    color: rgba(255, 251, 150, 0.4);
+                    margin-bottom: 20px;
+                ">Your last 5 interview performances</p>
+            </div>
             
-            <div class="history-container" style="margin-top: 40px;">
-                <div class="history-header">
-                    <h2 style="
-                        font-family: var(--font-display);
-                        font-size: 20px;
-                        letter-spacing: 0.05em;
-                        background: linear-gradient(90deg, var(--secondary), var(--accent));
-                        -webkit-background-clip: text;
-                        -webkit-text-fill-color: transparent;
-                        background-clip: text;
-                        margin-bottom: 8px;
-                    ">📊 Recent Interviews</h2>
-                    <p style="
-                        font-size: 13px;
-                        color: rgba(255, 251, 150, 0.4);
-                        margin-bottom: 20px;
-                    ">Your last 5 interview performances</p>
+            <div id="historySection" class="history-grid">
+                <div style="text-align: center; padding: 40px; color: rgba(255, 251, 150, 0.3);">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+                    <p style="font-size: 14px;">Loading interview history...</p>
                 </div>
-                
-                <div id="historySection" class="history-grid">
-                    <div style="text-align: center; padding: 40px; color: rgba(255, 251, 150, 0.3);">
-                        <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
-                        <p style="font-size: 14px;">Loading interview history...</p>
+            </div>
+        </div>
+        
+        <div id="message" class="message"></div>
+    </div>
+
+    <!-- SPLIT-SCREEN CHOICE SIMULATOR OVERLAY -->
+    <div class="simulator-overlay" id="simulatorOverlay">
+        <!-- LEFT PANEL - RESUME (CYAN SPECTRUM) -->
+        <div class="split-panel panel-left" id="panelLeft">
+            <div class="panel-content-wrapper">
+                <div class="panel-preview">
+                    <h2>Resume Optimization</h2>
+                    <p>Fast-track route. Upload your resume and let AI craft personalized questions based on your actual experience.</p>
+                    <ul class="perks-list">
+                        <li>✦ AI-powered personalization from your CV</li>
+                        <li>✦ Tailored to your skills & experience</li>
+                        <li>✦ Quick setup in under 2 minutes</li>
+                    </ul>
+                </div>
+                <div class="hold-confirm-zone" data-side="left">
+                    <div class="progress-container">
+                        <svg width="76" height="76">
+                            <circle class="progress-ring-bg" cx="38" cy="38" r="32"></circle>
+                            <circle class="progress-ring-bar" id="ringLeft" cx="38" cy="38" r="32"></circle>
+                        </svg>
+                    </div>
+                    <span>HOLD 3s TO SELECT</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL - MANUAL (MAGENTA SPECTRUM) -->
+        <div class="split-panel panel-right" id="panelRight">
+            <div class="panel-content-wrapper">
+                <div class="panel-preview">
+                    <h2>Manual Configuration</h2>
+                    <p>Full control sandbox. Hand-craft every parameter for targeted practice and custom scenarios.</p>
+                    <ul class="perks-list">
+                        <li>✦ Complete control over all parameters</li>
+                        <li>✦ Custom tech stacks & competencies</li>
+                        <li>✦ Advanced behavioral scenarios</li>
+                    </ul>
+                </div>
+                <div class="hold-confirm-zone" data-side="right">
+                    <div class="progress-container">
+                        <svg width="76" height="76">
+                            <circle class="progress-ring-bg" cx="38" cy="38" r="32"></circle>
+                            <circle class="progress-ring-bar" id="ringRight" cx="38" cy="38" r="32"></circle>
+                        </svg>
+                    </div>
+                    <span>HOLD 3s TO SELECT</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORM VIEW OVERLAY -->
+    <div class="form-view-overlay" id="formViewOverlay">
+        <div class="form-view-container" id="formViewContainer"></div>
+    </div>
+
+    <!-- RESUME UPLOAD OVERLAY -->
+    <div class="resume-upload-overlay" id="resumeUploadOverlay">
+        <div class="resume-upload-card">
+            <!-- UPLOADING STATE -->
+            <div class="upload-state" id="uploadingState" style="display: none;">
+                <div class="upload-spinner"></div>
+                <h3>📤 Uploading Resume...</h3>
+                <p id="uploadProgress">Processing your file</p>
+            </div>
+            
+            <!-- PARSING STATE -->
+            <div class="parsing-state" id="parsingState" style="display: none;">
+                <div class="parsing-spinner"></div>
+                <h3>🔍 Analyzing ATS Compatibility...</h3>
+                <div class="parsing-metrics">
+                    <div class="metric">
+                        <span class="metric-label">Parsing</span>
+                        <span class="metric-value" id="parsingValue">...</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">ATS Score</span>
+                        <span class="metric-value" id="atsScoreValue">--</span>
                     </div>
                 </div>
             </div>
             
-            <div id="message" class="message"></div>
+            <!-- SUCCESS STATE -->
+            <div class="success-state" id="successState" style="display: none;">
+                <div class="success-icon">✅</div>
+                <h3>Resume Parsed Successfully!</h3>
+                <div class="success-details">
+                    <p><strong>Job Role Detected:</strong> <span id="detectedRole">-</span></p>
+                    <p><strong>ATS Score:</strong> <span id="atsScore">-</span>/100</p>
+                    <p><strong>Skills Extracted:</strong> <span id="extractedSkills">-</span></p>
+                </div>
+                <p class="success-message">✨ Your personalized questions are ready!</p>
+                <button class="close-overlay-btn" onclick="closeResumeOverlay()">Continue</button>
+            </div>
+            
+            <!-- ERROR STATE -->
+            <div class="error-state" id="errorState" style="display: none;">
+                <div class="error-icon">⚠️</div>
+                <h3>Resume Not ATS-Friendly</h3>
+                <p class="error-message" id="errorMessage">-</p>
+                
+                <div class="ats-issues">
+                    <h4>Issues Found:</h4>
+                    <ul id="issuesList"></ul>
+                </div>
+                
+                <div class="ats-tips">
+                    <h4>💡 How to Fix:</h4>
+                    <ul>
+                        <li>Use standard fonts (Arial, Calibri, Times New Roman)</li>
+                        <li>Avoid images, graphics, and tables</li>
+                        <li>Use simple formatting without colors</li>
+                        <li>Include relevant keywords from job description</li>
+                        <li>Keep chronological work experience format</li>
+                        <li>Use .PDF format (not .DOC)</li>
+                    </ul>
+                </div>
+                
+                <div class="error-actions">
+                    <button class="try-again-btn" onclick="document.getElementById('resumeFileSim').click()">
+                        📄 Try Another Resume
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -27,91 +27,62 @@ class QuestionRequest(BaseModel):
 async def generate_questions(request: QuestionRequest):
     try:
         print(f"\n{'='*60}")
-        print(f"📝 Generating Questions")
+        print(f"📝 Generating Questions (Manual Mode)")
         print(f"   Job Role: {request.jobRole}")
         print(f"   Degree: {request.degree}")
-        print(f"   Company Type: {request.company_type}")
         print(f"   Difficulty: {request.difficulty}")
-        print(f"   Type: {request.interview_type}")
-        print(f"   Count: {request.count}")
         print(f"{'='*60}\n")
         
-        # Generate questions using your model
-        profile={
+        profile = {
             "job_role": request.jobRole,
-            "degree": request.degree,
+            "degree": request.degree, 
+            "education_lvl": request.education_lvl,
             "difficulty": request.difficulty,
             "company_type": request.company_type,
             "interview_type": request.interview_type
         }
-        result=question_generator.generate_questions(
-            profile=profile,
-            num_questions=request.count
-        )
-        questions=[q['question'] for q in result]
         
-        print(f"✅ Generated {len(questions)} questions")
-        print(f"{'='*60}\n")
+        # Use OpenAI generation if available
+        if question_generator.use_ai and question_generator.client:
+            raw_questions = question_generator._generate_with_openai(
+                profile=profile,
+                num_questions=request.count
+            )
+            questions = [q['question'] if isinstance(q, dict) else str(q) for q in raw_questions]
+        else:
+            raw_questions = question_generator._generate_from_templates(
+                profile=profile,
+                num_questions=request.count
+            )
+            questions = [q['question'] for q in raw_questions]
+        
+        print(f"✅ Successfully generated {len(questions)} questions")
         
         return {
             "success": True,
             "questions": questions,
-            "profile": profile,
-            "metadata": {
-                "job_role": request.jobRole,
-                "degree": request.degree,
-                "company_type": request.company_type,
-                "difficulty": request.difficulty,
-                "interview_type": request.interview_type,
-                "count": len(questions)
-            }
+            "profile": profile
         }
     
     except Exception as e:
         print(f"❌ Question generation failed: {str(e)}")
+        import traceback
+        traceback.print_exc()
         
-        # Fallback to basic questions if generation fails
-        fallback_questions = {
-            "behavioral": [
-                "Tell me about a time when you faced a significant challenge at work. How did you handle it?",
-                "Describe a situation where you had to work with a difficult team member.",
-                "Give me an example of a goal you set and how you achieved it.",
-                "Tell me about a time you failed. What did you learn from it?",
-                "Describe a time when you had to adapt to a major change at work."
-            ],
-            "technical": [
-                f"Explain your experience with the main technologies used in a {request.jobRole} role.",
-                "Walk me through how you would approach a complex technical problem.",
-                "What's the most challenging technical project you've worked on?",
-                "How do you stay updated with the latest developments in your field?",
-                "Describe your development process from requirements to deployment."
-            ],
-            "mixed": [
-                f"Tell me about your experience as a {request.jobRole}.",
-                "Describe a challenging project you worked on and how you overcame obstacles.",
-                "Where do you see yourself professionally in 5 years?",
-                "How do you handle disagreements with team members?",
-                f"Why are you interested in working as a {request.jobRole}?"
-            ]
-        }
-        
-        question_type = request.type if request.type in fallback_questions else "mixed"
-        fallback = fallback_questions[question_type][:request.count]
+        # Fallback
+        fallback_questions = [
+            f"Tell me about your experience related to {request.jobRole}.",
+            "Describe a challenging project you worked on recently.",
+            "How do you handle working under tight deadlines?",
+            "What are your core strengths relevant to this role?",
+            "Where do you see yourself in 3 to 5 years?"
+        ]
         
         return {
             "success": True,
-            "questions": fallback,
-            "fallback": True,
-            "metadata": {
-                "job_role": request.jobRole,
-                "degree": request.degree,
-                "company_type": request.company_type,
-                "difficulty": request.difficulty,
-                "count": len(fallback),
-                "interview_type": request.interview_type
-            }
+            "questions": fallback_questions[:request.count],
+            "fallback": True
         }
-
 
 @router.get("/test")
 def test_questions_api():

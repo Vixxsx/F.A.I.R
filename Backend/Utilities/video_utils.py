@@ -122,39 +122,56 @@ class VideoProcessor():
         finally:
             cap.release()
 
-    def extract_frames(self, video_path: str, output_folder: Optional[str] = None, every_nth: int = 10, max_frames: Optional[int] = None, return_arrays: bool = True) -> List[np.ndarray]:
-        self._check_cv2()
-        if not os.path.exists(video_path):
-            raise FileNotFoundError(f"Video file not found: {video_path}")
-
+    def extract_frames(self, video_path, output_folder, every_nth=None, max_frames=None, return_arrays=False):
+        import cv2
         cap = cv2.VideoCapture(video_path)
-        if not cap.isOpened():
-            raise Exception(f"Could not open video file: {video_path}")
-
-        if output_folder:
-            os.makedirs(output_folder, exist_ok=True)
-
-        frames          = []
-        frame_index     = 0
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        duration_seconds = total_frames / fps if fps > 0 else 0
+        
+        if every_nth is None:
+            every_nth = int(fps * 6)
+        if max_frames is None:
+            max_frames = min(20, max(5, int(duration_seconds / 6)))
+        
+        frame_paths = []
+        frame_count = 0
         extracted_count = 0
 
-        try:
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    break
-                if frame_index % every_nth == 0:
-                    if output_folder:
-                        cv2.imwrite(os.path.join(output_folder, f"frame_{frame_index:06d}.jpg"), frame)
-                    if return_arrays:
-                        frames.append(frame)
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            
+            # ← ADD INDENTATION HERE!
+            if frame is None or frame.size == 0:  # ← Validate frame
+                frame_count += 1
+                continue
+            
+            if frame_count % every_nth == 0 and extracted_count < max_frames:  # ← CORRECT INDENT
+                filename = f"frame_{extracted_count:03d}.jpg"
+                filepath = os.path.join(output_folder, filename)
+                
+                success = cv2.imwrite(filepath, frame)  # ← Check success
+                if success:
+                    frame_paths.append(filepath)
                     extracted_count += 1
-                    if max_frames and extracted_count >= max_frames:
-                        break
-                frame_index += 1
-            return frames
-        finally:
-            cap.release()
+            
+            frame_count += 1
+        
+        cap.release()
+        print(f"✅ Extracted {extracted_count} frames")
+        if return_arrays:
+            arrays = []
+            for path in frame_paths:
+                frame = cv2.imread(path)
+                if frame is not None:
+                    arrays.append(frame)
+            print(f"✅ Converted {len(arrays)} frames to arrays")
+            return arrays
+        else:
+            return frame_paths
+        
 
     def extract_frames_by_time(self, video_path: str, timestamps: List[float], output_folder: Optional[str] = None) -> List[np.ndarray]:
         self._check_cv2()

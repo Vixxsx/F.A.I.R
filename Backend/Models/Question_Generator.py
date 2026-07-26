@@ -1,11 +1,39 @@
 import os
 import json
 import random
+import sys
 from typing import List, Dict, Optional
 from openai import OpenAI
-from dotenv import load_dotenv
+from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
-load_dotenv()
+
+# Monkey-patch print to be Windows-console safe (cp1252 chokes on emoji).
+# Replaces problematic chars with '?' instead of crashing.
+_original_print = print
+def print(*args, **kwargs):
+    """Windows-safe print that replaces unprintable unicode chars."""
+    try:
+        _original_print(*args, **kwargs)
+    except UnicodeEncodeError:
+        safe_args = []
+        for a in args:
+            if isinstance(a, str):
+                safe_args.append(a.encode(sys.stdout.encoding or 'ascii', 'replace').decode(sys.stdout.encoding or 'ascii'))
+            else:
+                safe_args.append(a)
+        _original_print(*safe_args, **kwargs)
+
+
+def _safe_print(msg: str) -> None:
+    """Print that won't crash on Windows console (cp1252) when msg has emoji."""
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        # Fall back to ASCII-safe version
+        ascii_msg = msg.encode('ascii', 'replace').decode('ascii')
+        print(ascii_msg)
 
 
 class QuestionGenerator:
@@ -15,42 +43,147 @@ class QuestionGenerator:
         if self.api_key:
             try:
                 self.client = OpenAI(api_key=self.api_key)
-                print("✅ Question Generator initialized (GPT-4o-mini)")
+                _safe_print("✅ Question Generator initialized (GPT-4o-mini)")
                 self.use_ai = True
             except Exception as e:
-                print(f"⚠️  OpenAI API unavailable: {e}")
+                _safe_print(f"⚠️  OpenAI API unavailable: {e}")
                 self.client = None
                 self.use_ai = False
         else:
-            print("⚠️  OPENAI_API_KEY not found in environment")
+            _safe_print("⚠️  OPENAI_API_KEY not found in environment")
             self.client = None
             self.use_ai = False
 
         self.template_questions = self._load_templates()
 
-    def generate_questions(self, profile: Optional[Dict] = None, num_questions: int = 5, interview_type: str = 'mixed') -> List[Dict]:
-        if profile is None:
-            profile = {
-                'job_role':       'Software Engineer',
-                'degree':         'Computer Science',
-                'difficulty':     'intermediate',
-                'company_type':   'Tech Company',
-                'interview_type': interview_type
-            }
-
-        if 'interview_type' not in profile:
-            profile['interview_type'] = interview_type
-
+    def generate_questions_resume(self, profile: Dict, num_questions: int = 5) -> List[Dict]:
+        """
+        Generate personalized interview questions based on resume content.
+        Field-agnostic: works for tech, business, engineering, design, etc.
+        """
         username = profile.get('username', None)
+
+        # Load question history for dedup
+        recent_questions = self._load_question_history(username)
+
+        # Extract resume context
+        skills = profile.get('skills', [])
+        projects = profile.get('projects', [])
+        experience = profile.get('experience', [])
+        field = profile.get('job_role', 'other')
+        job_role = profile.get('job_role', 'Professional')
+        difficulty = profile.get('difficulty', 'intermediate')
+        interview_type = profile.get('interview_type', 'mixed')
+
+        # Build context strings
+        skills_text = ', '.join(skills[:15]) if skills else 'No skills extracted'
+
+        projects_text = '\n'.join(
+            f"- {p.get('name', 'Unknown')}: {p.get('description', 'No description')} (Methods/Tools: {', '.join(p.get('tech', []))})"
+            for p in projects[:3]
+        ) if projects else 'No projects extracted'
+
+        experience_text = '\n'.join(
+            f"- {e.get('role', 'Unknown')} at {e.get('company', 'Unknown')} ({e.get('duration', 'Unknown')}): {e.get('description', 'No description')}"
+            for e in experience[:2]
+        ) if experience else 'No experience extracted'
+
+        # Exclusion text
+        exclusion_text = ""
+        if recent_questions:
+            exclusion_text = f"\n\nAvoid these recently asked questions:\n" + '\n'.join(f"  - {q}" for q in recent_questions[:20])
+
+        # Field-specific guidance
+        field_guidance = {
+            'technology': "Focus on technical depth, system design, coding, problem-solving.",
+            'business':   "Focus on business impact, stakeholdnking, case scenarios.",
+            'engineering':"Focus on engineering principles, design process, technical problem-solving, safety/standards.",
+            'design':     "Focus on design process, user empathy, portfolio projects, creative problem-solving.",
+            'sciences':   "Focus on research methodology, lab ing, data analysis.",
+            'liberal_arts':"Focus on communication, critical thinking, research, writing, cultural awareness.",
+            'healthcare': "Focus on patient care, clinical scenarios, ethics, teamwork, communication.",
+            'education':  "Focus on pedagogy, classroom manageent engagement.",
+            'other':      "Focus on general professional competencies relevant to the role."
+        }.get(field, "Focus on general professional competencies.")
 
         if self.use_ai and self.client:
             try:
-                questions = self._generate_with_openai(profile, num_questions, username)
-                self._save_to_history(username, [q['question'] for q in questions], profile.get('interview_type'), profile.get('job_role'))
+                prompt = f"""Generate {num_questions} personalized interview questions for a {job_role} position.
+
+Candidate field: {field.upper()}
+Field-specific focus: {field_guidance}
+
+Candidate background (from their resume):
+- Skills: {skills_text}
+
+Projects/Work:
+{projects_text}
+
+Experience:
+{experience_text}
+
+Interview type: {interview_type}
+Difficulty: {difficulty}
+{exclusion_text}
+
+Generate questions that:
+1. Reference their SPECIFIC projects and experience (not generic)
+2. Test skills they claim to have
+3. Are appropriate for the {field} field
+4. Feel personalized, not template-generated
+
+Type rule: {interview_type.upper()}
+- behavioral: STAR-format, past experiences
+- technical: field-specific knowledge and methods
+- mixed: alternate field-specific and behavioral
+
+Return ONLY raw JSON array, no markdown, no code fences:
+[
+  {{
+    "id": 1,
+    "question": "specific personalized question",
+    "category": "technical | behavioral | situational",
+    "difficulty": "easy | medium | hard",
+    "time_limit": 120
+  }}
+]"""
+
+                response = self.client.chat.completions.create(
+                    model="gpt-4o-mini",
+                    messages=[
+                        {"role": "system", "content": f"You are an expert interviewer for {field} roles. Generate personalized questions based on the candidate's resume. Return only valid raw JSON."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=1.0,
+                    max_tokens=1500,
+                    presence_penalty=0.6,
+                    frequency_penalty=0.3
+                )
+
+                content = response.choices[0].message.content.strip()
+                if content.startswith("```"):
+                    content = content.split("```")[1]
+                    if content.startswith("json"):
+                        content = content[4:]
+
+                questions = json.loads(content.strip())
+                print(f"✅ Generated {len(questions)} personalized questions for {field} field")
+                print(f"🔧 DEBUG - self.use_ai: {self.use_ai}")
+                print(f"🔧 DEBUG - job_role: {job_role}")
+                print(f"🔧 DEBUG - field: {field}")
+                # Save to history
+                self._save_to_history(
+                    username,
+                    [q['question'] for q in questions],
+                    interview_type,
+                    job_role
+                )
+
                 return questions
+
             except Exception as e:
-                print(f"⚠️  OpenAI generation failed: {e}")
-                return self._generate_from_templates(profile, num_questions)
+                print(f"⚠️  Resume-based generation failed: {e}")
+                return self._generate_from_templates(profile,num_questions)
         else:
             return self._generate_from_templates(profile, num_questions)
 
@@ -73,26 +206,30 @@ class QuestionGenerator:
             print(f"⚠️  Could not save question history: {e}")
 
     def _generate_with_openai(self, profile: Dict, num_questions: int, username: str = None) -> List[Dict]:
-        interview_type = profile.get('interview_type', 'mixed').lower()
-        job_role       = profile.get('job_role',       'Software Engineer')
-        difficulty     = profile.get('difficulty',     'intermediate')
-        degree         = profile.get('degree',         'Computer Science')
-        company_type   = profile.get('company_type',   'Tech Company')
+        interview_type = profile['interview_type'].lower() 
+        job_role = profile.get('job_role', 'Professional')
+        difficulty = profile['difficulty']  
+        education_lvl = profile['education_lvl'] 
+        degree = profile['degree'] 
+        company_type = profile['company_type']
 
         recent_questions = self._load_question_history(username)
         random_seed = random.randint(1, 1000000)
 
         system_prompt = (
             f"You are a creative and experienced interviewer for {job_role} positions. "
+            f"The Candidate has a education level of {education_lvl} {degree} degree and is interviewing for a {company_type}. "
             f"Generate UNIQUE, VARIED, and THOUGHTFUL questions. "
+            f"The Candidate is a FRESHER with no prior work experience. "
             f"Avoid cliché or generic interview questions. "
+            f"Avoid Asking questions regarding Professional Experience, as the candidate is a fresher. "
             f"Return only valid raw JSON — no markdown, no code fences, no explanation."
         )
 
         type_instructions = {
             'behavioral': (
-                "Generate ONLY behavioral questions answerable in STAR format. "
-                "Focus on: past experiences, teamwork, conflict resolution, leadership, "
+                "Generate ONLY behavioral questions answerable in STAR format. but never mention STAR. "
+                "Focus on: past experiences (dont ask if FRESHER), teamwork, conflict resolution, leadership "
                 "handling failure, communication, adaptability, decision-making. "
                 "Make each question UNIQUE — no repetitive themes. "
                 "Do NOT include technical questions."
@@ -268,7 +405,6 @@ Return ONLY a raw JSON array. No markdown. No explanation. No code fences:
                 {"question": "You inherit a legacy codebase with no documentation. How do you approach it?",       "category": "situational", "difficulty": "medium", "time_limit": 120},
             ]
         }
-
 
 def quick_generate(num_questions: int = 5, interview_type: str = 'mixed') -> List[Dict]:
     generator = QuestionGenerator()

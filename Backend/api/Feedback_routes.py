@@ -4,8 +4,8 @@ from typing import List, Optional, Dict, Any
 import os
 import json
 from openai import OpenAI
-from dotenv import load_dotenv
-load_dotenv()
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 router = APIRouter(prefix="/api/feedback", tags=["feedback"])
 

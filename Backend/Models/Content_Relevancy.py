@@ -2,9 +2,8 @@ import os
 import json
 from typing import Dict, Optional
 from openai import OpenAI
-from dotenv import load_dotenv
-
-load_dotenv()
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
 
 class ContentRelevancyAnalyzer:
